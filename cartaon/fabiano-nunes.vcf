@@ -1,0 +1,9 @@
+BEGIN:VCARD
+VERSION:3.0
+N:Nunes;Fabiano;;;
+FN:Fabiano Nunes
+ORG:Linck Náutica
+URL:https://www.linckmaquinas.com.br/
+EMAIL;TYPE=INTERNET:fabiano.nunes@linckmaquinas.com.br
+TEL;TYPE=voice,cell,pref:41 9231-6430
+END:VCARD
