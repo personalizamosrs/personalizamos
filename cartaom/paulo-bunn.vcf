@@ -1,0 +1,10 @@
+BEGIN:VCARD
+VERSION:3.0
+N:Bunn;Paulo;;;
+FN:Paulo Bunn
+TITLE:Consultor de Vendas
+ORG:Linck Máquinas
+URL:https://www.linckmaquinas.com.br/
+EMAIL;TYPE=INTERNET:paulo.bunn@linckmaquinas.com.br
+TEL;TYPE=voice,cell,pref:48 99981 8328
+END:VCARD

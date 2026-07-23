@@ -1,0 +1,10 @@
+BEGIN:VCARD
+VERSION:3.0
+N:Lopes;Lucas;;;
+FN:Lucas Lopes
+TITLE:Consultor de Vendas
+ORG:Linck Máquinas
+URL:https://www.linckmaquinas.com.br/
+EMAIL;TYPE=INTERNET:lucas.lopes@linckmaquinas.com.br
+TEL;TYPE=voice,cell,pref:44 98804 1978
+END:VCARD

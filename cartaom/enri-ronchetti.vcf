@@ -1,0 +1,10 @@
+BEGIN:VCARD
+VERSION:3.0
+N:Ronchetti;Enri;;;
+FN:Enri Ronchetti
+TITLE:Consultor de Vendas
+ORG:Linck Máquinas
+URL:https://www.linckmaquinas.com.br/
+EMAIL;TYPE=INTERNET:enri@linckmaquinas.com.br
+TEL;TYPE=voice,cell,pref:51 99973 1025
+END:VCARD

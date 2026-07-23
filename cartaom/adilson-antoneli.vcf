@@ -1,0 +1,10 @@
+BEGIN:VCARD
+VERSION:3.0
+N:Antoneli;Adilson;;;
+FN:Adilson Antoneli
+TITLE:Consultor de Vendas
+ORG:Linck Máquinas
+URL:https://www.linckmaquinas.com.br/
+EMAIL;TYPE=INTERNET:adilson.antoneli@linckmaquinas.com.br
+TEL;TYPE=voice,cell,pref:42 99104 7524
+END:VCARD

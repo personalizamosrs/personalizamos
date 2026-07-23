@@ -1,0 +1,10 @@
+BEGIN:VCARD
+VERSION:3.0
+N:Guedes;Vinícius;;;
+FN:Vinícius Guedes
+TITLE:Gerente Regional de Serviços
+ORG:Grupo Linck
+URL:https://www.linckmaquinas.com.br/
+EMAIL;TYPE=INTERNET:guedes@linckmaquinas.com.br
+TEL;TYPE=voice,cell,pref:51 98151 7841
+END:VCARD

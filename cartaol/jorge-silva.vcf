@@ -1,0 +1,10 @@
+BEGIN:VCARD
+VERSION:3.0
+N:Silva;Jorge;;;
+FN:Jorge Silva
+TITLE:Coordenador de Vendas - Peças
+ORG:Grupo Linck
+URL:https://www.linckmaquinas.com.br/
+EMAIL;TYPE=INTERNET:jorge.silva@linckmaquinas.com.br
+TEL;TYPE=voice,cell,pref:44 98809 5458
+END:VCARD

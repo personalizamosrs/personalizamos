@@ -1,0 +1,10 @@
+BEGIN:VCARD
+VERSION:3.0
+N:Appel;Jair;;;
+FN:Jair Appel
+TITLE:Consultor de Vendas
+ORG:Linck Máquinas
+URL:https://www.linckmaquinas.com.br/
+EMAIL;TYPE=INTERNET:jaire@linckmaquinas.com.br
+TEL;TYPE=voice,cell,pref:51 98606 0042
+END:VCARD

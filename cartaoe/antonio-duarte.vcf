@@ -1,0 +1,10 @@
+BEGIN:VCARD
+VERSION:3.0
+N:Duarte;Antônio;;;
+FN:Antônio Duarte
+TITLE:Consultor de Vendas
+ORG:Linck Equipamentos
+URL:https://www.linckmaquinas.com.br/
+EMAIL;TYPE=INTERNET:duarte@linckmaquinas.com.br
+TEL;TYPE=voice,cell,pref:53 98115 5885
+END:VCARD

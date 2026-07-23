@@ -1,0 +1,10 @@
+BEGIN:VCARD
+VERSION:3.0
+N:Silva;Mariana;;;
+FN:Mariana Silva
+TITLE:Consultora de Vendas
+ORG:Linck Náutica
+URL:https://www.linckmaquinas.com.br/
+EMAIL;TYPE=INTERNET:mariana.silva@linckmaquinas.com.br
+TEL;TYPE=voice,cell,pref:48 98846 7403
+END:VCARD

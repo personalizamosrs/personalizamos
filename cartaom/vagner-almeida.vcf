@@ -1,0 +1,10 @@
+BEGIN:VCARD
+VERSION:3.0
+N:Almeida;Vagner;;;
+FN:Vagner Almeida
+TITLE:Consultor de Vendas
+ORG:Linck Máquinas
+URL:https://www.linckmaquinas.com.br/
+EMAIL;TYPE=INTERNET:vagner.almeida@linckmaquinas.com.br
+TEL;TYPE=voice,cell,pref:51 99327 3313
+END:VCARD

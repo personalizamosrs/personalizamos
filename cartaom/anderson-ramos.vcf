@@ -1,0 +1,10 @@
+BEGIN:VCARD
+VERSION:3.0
+N:Ramos;Anderson;;;
+FN:Anderson Ramos
+TITLE:Consultor de Vendas
+ORG:Linck Máquinas
+URL:https://www.linckmaquinas.com.br/
+EMAIL;TYPE=INTERNET:anderson.ramos@linckmaquinas.com.br
+TEL;TYPE=voice,cell,pref:45 99915 0499
+END:VCARD

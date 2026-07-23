@@ -1,0 +1,10 @@
+BEGIN:VCARD
+VERSION:3.0
+N:Rosa;Josiel;;;
+FN:Josiel Rosa
+TITLE:Consultor de Vendas
+ORG:Linck Máquinas
+URL:https://www.linckmaquinas.com.br/
+EMAIL;TYPE=INTERNET:josiel.rosa@linckmaquinas.com.br
+TEL;TYPE=voice,cell,pref:48 99166 9646
+END:VCARD

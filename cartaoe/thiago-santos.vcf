@@ -1,0 +1,10 @@
+BEGIN:VCARD
+VERSION:3.0
+N:Santos;Thiago;;;
+FN:Thiago Santos
+TITLE:Consultor de Vendas
+ORG:Linck Equipamentos
+URL:https://www.linckmaquinas.com.br/
+EMAIL;TYPE=INTERNET:thiago.santos@linckmaquinas.com.br
+TEL;TYPE=voice,cell,pref:47 99145 7087
+END:VCARD

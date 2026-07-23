@@ -1,0 +1,10 @@
+BEGIN:VCARD
+VERSION:3.0
+N:Bona;Diego;;;
+FN:Diego Bona
+TITLE:Consultor de Vendas
+ORG:Linck Máquinas
+URL:https://www.linckmaquinas.com.br/
+EMAIL;TYPE=INTERNET:diego.bona@linckmaquinas.com.br
+TEL;TYPE=voice,cell,pref:51 99682 2248
+END:VCARD

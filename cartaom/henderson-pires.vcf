@@ -1,0 +1,10 @@
+BEGIN:VCARD
+VERSION:3.0
+N:Pires;Henderson;;;
+FN:Henderson Pires
+TITLE:Consultor de Vendas
+ORG:Linck Máquinas
+URL:https://www.linckmaquinas.com.br/
+EMAIL;TYPE=INTERNET:henderson@linckmaquinas.com.br
+TEL;TYPE=voice,cell,pref:41 98874 4145
+END:VCARD

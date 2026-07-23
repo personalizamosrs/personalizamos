@@ -1,0 +1,10 @@
+BEGIN:VCARD
+VERSION:3.0
+N:Gonçalves;Guilherme;;;
+FN:Guilherme Gonçalves
+TITLE:Consultor de Vendas
+ORG:Linck Equipamentos
+URL:https://www.linckmaquinas.com.br/
+EMAIL;TYPE=INTERNET:guilherme.goncalves@linckmaquinas.com.br
+TEL;TYPE=voice,cell,pref:41 98832 2872
+END:VCARD

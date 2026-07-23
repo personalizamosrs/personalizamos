@@ -1,0 +1,10 @@
+BEGIN:VCARD
+VERSION:3.0
+N:Wehmuth;Edson;;;
+FN:Edson Wehmuth
+TITLE:Consultor de Vendas
+ORG:Linck Máquinas
+URL:https://www.linckmaquinas.com.br/
+EMAIL;TYPE=INTERNET:edsonwe@linckmaquinas.com.br
+TEL;TYPE=voice,cell,pref:47 99973 6015
+END:VCARD

@@ -1,0 +1,10 @@
+BEGIN:VCARD
+VERSION:3.0
+N:Campelo;Fernando;;;
+FN:Fernando Campelo
+TITLE:Consultor de Vendas
+ORG:Linck Máquinas
+URL:https://www.linckmaquinas.com.br/
+EMAIL;TYPE=INTERNET:fernando.campelo@linckmaquinas.com.br
+TEL;TYPE=voice,cell,pref:43 99936 0803
+END:VCARD

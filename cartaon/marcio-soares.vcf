@@ -1,0 +1,10 @@
+BEGIN:VCARD
+VERSION:3.0
+N:Soares;Márcio;;;
+FN:Márcio Soares
+TITLE:Consultor de Vendas
+ORG:Linck Náutica
+URL:https://www.linckmaquinas.com.br/
+EMAIL;TYPE=INTERNET:marcio.soares@linckmaquinas.com.br
+TEL;TYPE=voice,cell,pref:48 98813 3751
+END:VCARD
