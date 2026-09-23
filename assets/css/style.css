@@ -572,7 +572,7 @@ footer {
 .page-title-container h1 {
     display: inline;
     margin-left: 10px;
-    font-family: 'Lobster', cursive;
+    font-family: 'Open Sans', sans-serif;
     font-size: 24px;
     color: #5d5d5d;
     font-weight: bold;
@@ -583,6 +583,7 @@ footer {
 .page-title-container p {
     display: inline;
     margin-left: 5px;
+    font-family: 'Open Sans', sans-serif;
     font-size: 14px;
     font-style: italic;
     vertical-align: middle;
