@@ -1,0 +1,23 @@
+---
+description: Sempre regenerar robots.txt e sitemap.xml ao criar/alterar/remover paginas HTML
+globs: "**/*.html"
+alwaysApply: true
+---
+
+# Sitemap e robots automaticos
+
+Sempre que **criar, renomear, remover ou publicar** paginas `.html` do site Personalizamos:
+
+1. Rodar o gerador antes do commit/push:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File tools\generate-sitemap.ps1
+```
+
+2. Incluir no commit: `sitemap.xml` e `robots.txt` (se mudaram).
+
+3. Nao editar `sitemap.xml` na mao — ele e gerado a partir de todos os HTML da raiz.
+
+4. Excecao: `amigo-secreto-porto-alegre.html` e so redirect e fica fora do sitemap (lista `$exclude` no script).
+
+5. `robots.txt` deve sempre apontar para `https://personalizamos.com.br/sitemap.xml`.

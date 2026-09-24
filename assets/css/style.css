@@ -340,14 +340,17 @@ ul.navbar-nav li.active .dropdown-menu > .active > a:focus { background: #9d426b
     background: url(../img/line.png) left center repeat-x;
 }
 
-.work-title h2 {
-	width: 220px;
+.work-title h2,
+.work-title h1 {
+	width: 420px;
+	max-width: 100%;
 	margin: 0 auto;
 	background: #fff;
 	font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
 	font-size: 24px;
 	color: #5d5d5d;
 	font-weight: bold;
+	text-align: center;
 }
 
 .work {
@@ -985,4 +988,20 @@ a.whatsapp-float img {
 		width: 32px !important;
 		height: 32px !important;
 	}
+}
+
+/* Contact bar (was H1 — kept as p for SEO) */
+.presentation-container p.site-contact-bar {
+	margin: 0;
+	padding: 0;
+	font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+	font-size: 16px;
+	color: #5d5d5d;
+	font-weight: bold;
+	font-style: normal;
+}
+.presentation-container p.site-contact-bar a {
+	font-style: normal;
+	font-weight: bold;
+	color: inherit;
 }
