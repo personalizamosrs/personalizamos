@@ -1,0 +1,26 @@
+---
+description: Botao flutuante WhatsApp obrigatorio em toda pagina HTML nova
+globs: "**/*.html"
+alwaysApply: true
+---
+
+# Botao flutuante WhatsApp
+
+Em **toda** pagina HTML nova ou alterada do site Personalizamos:
+
+1. Manter `assets/css/style.css` (com cache-bust `?v=...`) e `assets/js/scripts.js` no template — o botao flutuante e injetado automaticamente pelo `scripts.js`.
+2. Nao remover a logica do botao em `assets/js/scripts.js` nem o CSS `a.whatsapp-float` em `assets/css/style.css`.
+3. Link fixo do botao:
+
+```
+https://api.whatsapp.com/send?phone=5551985435231&text=Queria%20uma%20informa%C3%A7%C3%A3o%20sobre%20um%20produto
+```
+
+4. Icone: `assets/img/logo_wp.png` (pequeno, dentro do botao verde circular).
+5. Se criar uma pagina sem `scripts.js`, incluir antes de `</body>`:
+
+```html
+<a class="whatsapp-float" href="https://api.whatsapp.com/send?phone=5551985435231&text=Queria%20uma%20informa%C3%A7%C3%A3o%20sobre%20um%20produto" target="_blank" rel="noopener noreferrer" aria-label="Chamar no WhatsApp"><img src="assets/img/logo_wp.png" alt="WhatsApp" width="28" height="28"></a>
+```
+
+6. Ao copiar template de produto/data especial, preservar o bloco de scripts do rodape (incluindo `scripts.js`).

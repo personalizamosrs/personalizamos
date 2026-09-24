@@ -1,5 +1,17 @@
 
 jQuery(document).ready(function() {
+
+	/*
+	    Floating WhatsApp button (all pages)
+	*/
+	if (!document.querySelector('.whatsapp-float')) {
+		var waHref = 'https://api.whatsapp.com/send?phone=5551985435231&text=Queria%20uma%20informa%C3%A7%C3%A3o%20sobre%20um%20produto';
+		jQuery('body').append(
+			'<a class="whatsapp-float" href="' + waHref + '" target="_blank" rel="noopener noreferrer" aria-label="Chamar no WhatsApp">' +
+			'<img src="assets/img/logo_wp.png" alt="WhatsApp" width="28" height="28">' +
+			'</a>'
+		);
+	}
 	
 	/*
 	    Wow
