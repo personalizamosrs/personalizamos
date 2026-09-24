@@ -354,16 +354,30 @@ ul.navbar-nav li.active .dropdown-menu > .active > a:focus { background: #9d426b
 	margin-top: 20px;
 	padding-bottom: 10px;
 	background: #f8f8f8;
-	border-bottom: 2px solid #9d426b;
-    border-top: 2px solid #9d426b;
-    border-left: 2px solid #9d426b;
-    border-right: 2px solid #9d426b;
-	border-radius: 12px;
+	border: 2px solid #9d426b;
+	-moz-border-radius: 16px;
+	-webkit-border-radius: 16px;
+	border-radius: 16px;
 	overflow: hidden;
+	-webkit-background-clip: padding-box;
+	background-clip: padding-box;
+}
+
+.work > a {
+	display: block;
+	overflow: hidden;
+	-moz-border-radius: 14px 14px 0 0;
+	-webkit-border-radius: 14px 14px 0 0;
+	border-radius: 14px 14px 0 0;
 }
 
 .work img {
-	border-radius: 10px 10px 0 0;
+	display: block;
+	width: 100%;
+	height: auto;
+	-moz-border-radius: 14px 14px 0 0;
+	-webkit-border-radius: 14px 14px 0 0;
+	border-radius: 14px 14px 0 0;
 }
 
 .work:hover img {
