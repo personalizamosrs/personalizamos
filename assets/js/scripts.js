@@ -1,15 +1,16 @@
 
 jQuery(document).ready(function() {
 
-			/*
+				/*
 	    Floating WhatsApp button (all pages)
 	*/
 	try {
 		if (!document.querySelector('.whatsapp-float')) {
 			var waHref = 'https://api.whatsapp.com/send?phone=5551985435231&text=Queria%20uma%20informa%C3%A7%C3%A3o%20sobre%20um%20produto';
 			jQuery('body').append(
-				'<a class="whatsapp-float" href="' + waHref + '" target="_blank" rel="noopener noreferrer" aria-label="Chamar no WhatsApp" title="WhatsApp">' +
-				'<img src="assets/img/logo_wp.png" alt="WhatsApp" width="34" height="34">' +
+				'<a class="whatsapp-float" href="' + waHref + '" target="_blank" rel="noopener noreferrer" aria-label="Chamar no WhatsApp" title="WhatsApp" ' +
+				'style="position:fixed;right:20px;bottom:20px;z-index:2147483646;width:64px;height:64px;background:#25d366;border:3px solid #fff;border-radius:50%;box-shadow:0 6px 20px rgba(0,0,0,.4);text-align:center;line-height:58px;display:block;text-decoration:none;">' +
+				'<img src="assets/img/logo_wp.png" alt="WhatsApp" width="36" height="36" style="width:36px;height:36px;vertical-align:middle;border:0;">' +
 				'</a>'
 			);
 		}
