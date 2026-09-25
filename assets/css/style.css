@@ -1039,13 +1039,29 @@ a.whatsapp-float img {
 	text-align: left;
 }
 .seo-content-block ul {
-	list-style: none;
-	padding-left: 0;
+	list-style: none !important;
+	padding-left: 0 !important;
 	margin: 10px 0 18px;
 }
 .seo-content-block li {
+	list-style: none !important;
 	margin-bottom: 6px;
-	padding-left: 0;
+	padding-left: 0 !important;
+}
+.seo-content-block li::before,
+.seo-content-block li::marker {
+	content: none !important;
+	display: none !important;
+}
+.seo-plain-list {
+	margin: 10px 0 18px;
+	padding: 0;
+	text-align: left;
+}
+.seo-plain-list p {
+	margin: 0 0 8px;
+	padding: 0;
+	text-align: left;
 }
 .faq-item {
 	margin-bottom: 8px;
