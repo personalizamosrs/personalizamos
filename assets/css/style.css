@@ -1011,6 +1011,7 @@ a.whatsapp-float img {
 .seo-content-block {
 	margin: 30px auto 40px;
 	padding-bottom: 20px;
+	text-align: left;
 }
 .seo-content-block h2 {
 	font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
@@ -1035,6 +1036,16 @@ a.whatsapp-float img {
 	font-size: 14px;
 	line-height: 1.55;
 	color: #5d5d5d;
+	text-align: left;
+}
+.seo-content-block ul {
+	list-style: none;
+	padding-left: 0;
+	margin: 10px 0 18px;
+}
+.seo-content-block li {
+	margin-bottom: 6px;
+	padding-left: 0;
 }
 .faq-item {
 	margin-bottom: 8px;
