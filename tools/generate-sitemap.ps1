@@ -8,7 +8,7 @@ $base = "https://personalizamos.com.br"
 $utf8 = New-Object System.Text.UTF8Encoding $false
 $today = (Get-Date).ToString("yyyy-MM-dd")
 
-$exclude = @("amigo-secreto-porto-alegre.html")
+$exclude = @("amigo-secreto-porto-alegre.html","checklist-google-pvc.html")
 
 $pages = Get-ChildItem $root -Filter "*.html" -File |
   Where-Object { $exclude -notcontains $_.Name } |

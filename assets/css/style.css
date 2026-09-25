@@ -1005,3 +1005,42 @@ a.whatsapp-float img {
 	font-weight: bold;
 	color: inherit;
 }
+
+
+/* SEO content + FAQ */
+.seo-content-block {
+	margin: 30px auto 40px;
+	padding-bottom: 20px;
+}
+.seo-content-block h2 {
+	font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+	font-size: 22px;
+	color: #5d5d5d;
+	font-weight: bold;
+	margin-bottom: 15px;
+}
+.seo-content-block h3 {
+	font-size: 18px;
+	color: #5d5d5d;
+	font-weight: bold;
+	margin-top: 22px;
+}
+.seo-content-block h4 {
+	font-size: 15px;
+	color: #9d426b;
+	font-weight: bold;
+	margin: 14px 0 6px;
+}
+.seo-content-block p, .seo-content-block li {
+	font-size: 14px;
+	line-height: 1.55;
+	color: #5d5d5d;
+}
+.faq-item {
+	margin-bottom: 8px;
+	padding-bottom: 8px;
+	border-bottom: 1px solid #eee;
+}
+.pvc-home-block {
+	margin-top: 20px;
+}
