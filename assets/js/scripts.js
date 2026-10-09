@@ -226,9 +226,58 @@ jQuery(window).load(function() {
 	
 });
 
-/* PWA: register service worker */
-if ('serviceWorker' in navigator) {
-	window.addEventListener('load', function () {
-		navigator.serviceWorker.register('/sw.js').catch(function () {});
+/* PWA: register service worker + botão Instalar app */
+(function () {
+	if ('serviceWorker' in navigator) {
+		window.addEventListener('load', function () {
+			navigator.serviceWorker.register('/sw.js').catch(function () {});
+		});
+	}
+
+	var deferredPrompt = null;
+
+	function hideInstallUi() {
+		var el = document.getElementById('pwa-install-bar');
+		if (el) el.style.display = 'none';
+	}
+
+	function showInstallUi() {
+		if (window.matchMedia('(display-mode: standalone)').matches) return;
+		if (navigator.standalone) return;
+		if (sessionStorage.getItem('pwaInstallDismissed') === '1') return;
+		var el = document.getElementById('pwa-install-bar');
+		if (!el) {
+			el = document.createElement('div');
+			el.id = 'pwa-install-bar';
+			el.innerHTML =
+				'<span>Instale o app da Personalizamos</span>' +
+				'<button type="button" id="pwa-install-btn">Instalar app</button>' +
+				'<button type="button" id="pwa-install-close" aria-label="Fechar">×</button>';
+			document.body.appendChild(el);
+			document.getElementById('pwa-install-close').addEventListener('click', function () {
+				sessionStorage.setItem('pwaInstallDismissed', '1');
+				hideInstallUi();
+			});
+			document.getElementById('pwa-install-btn').addEventListener('click', function () {
+				if (!deferredPrompt) return;
+				deferredPrompt.prompt();
+				deferredPrompt.userChoice.then(function () {
+					deferredPrompt = null;
+					hideInstallUi();
+				});
+			});
+		}
+		el.style.display = 'flex';
+	}
+
+	window.addEventListener('beforeinstallprompt', function (e) {
+		e.preventDefault();
+		deferredPrompt = e;
+		showInstallUi();
 	});
-}
+
+	window.addEventListener('appinstalled', function () {
+		deferredPrompt = null;
+		hideInstallUi();
+	});
+})();

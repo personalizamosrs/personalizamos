@@ -1,11 +1,11 @@
 /* Personalizamos PWA service worker */
-var CACHE_NAME = 'personalizamos-pwa-v1';
+var CACHE_NAME = 'personalizamos-pwa-v2';
 var PRECACHE = [
   '/',
   '/index.html',
   '/manifest.json',
-  '/assets/css/style.css?v=20260925d',
-  '/assets/js/scripts.js?v=20261008pwa',
+  '/assets/css/style.css?v=20261008pwa',
+  '/assets/js/scripts.js?v=20261008pwa2',
   '/assets/ico/pwa-icon-192.png',
   '/assets/ico/pwa-icon-512.png',
   '/assets/ico/favicon-32.png',
