@@ -362,23 +362,73 @@
     img.src = MOCKUP_CANECA_SRC;
   }
 
-  /** Arte com leve curva cilíndrica (faixas verticais). */
+  /**
+   * Envolve a arte na face da caneca (projeção cilíndrica).
+   * Cada coluna usa asin para mapear a frente do cilindro e
+   * a altura encolhe nas bordas — parece impressão em volta.
+   */
   function desenharArteCilindro(ctx, art, zx, zy, zw, zh) {
-    var cols = Math.max(28, Math.floor(zw));
+    var cols = Math.max(64, Math.floor(zw * 1.2));
+    var cx = zx + zw / 2;
     for (var i = 0; i < cols; i++) {
-      var u0 = i / cols;
-      var u1 = (i + 1) / cols;
-      var mid = (u0 + u1) / 2;
-      var bend = Math.cos((mid - 0.5) * Math.PI * 0.85);
-      var hScale = 0.88 + 0.12 * bend;
+      var t0 = i / cols;
+      var t1 = (i + 1) / cols;
+      var mid = (t0 + t1) / 2;
+      var nx = mid * 2 - 1;
+      if (nx < -1 || nx > 1) continue;
+
+      var angle = Math.asin(Math.max(-1, Math.min(1, nx)));
+      var u = 0.5 + angle / Math.PI;
+      var slice = 1 / cols;
+      var su = (u - slice * 0.55) * art.width;
+      var sw = Math.max(1, slice * 1.15 * art.width);
+
+      var cosA = Math.cos(angle);
+      var hScale = 0.78 + 0.22 * cosA;
       var sh = zh * hScale;
-      var sy = zy + (zh - sh) / 2;
-      var sx = u0 * art.width;
-      var sw = Math.max(0.5, (u1 - u0) * art.width);
-      var dx = zx + u0 * zw;
-      var dw = Math.ceil((u1 - u0) * zw) + 1;
-      ctx.drawImage(art, sx, 0, sw, art.height, dx, sy, dw, sh);
+      var bow = (1 - cosA) * zh * 0.04;
+      var sy = zy + (zh - sh) / 2 + bow;
+      var dx = zx + t0 * zw;
+      var dw = Math.ceil((t1 - t0) * zw) + 1.25;
+
+      ctx.globalAlpha = 0.55 + 0.45 * cosA;
+      ctx.drawImage(art, su, 0, sw, art.height, dx, sy, dw, sh);
     }
+    ctx.globalAlpha = 1;
+  }
+
+  function clipZonaCaneca(ctx, zone) {
+    var x = zone.x;
+    var y = zone.y;
+    var w = zone.w;
+    var h = zone.h;
+    var rx = w * 0.42;
+    var ry = h * 0.48;
+    ctx.beginPath();
+    ctx.ellipse(x + w / 2, y + h / 2, rx, ry, 0, 0, Math.PI * 2);
+    ctx.closePath();
+  }
+
+  function sombrearCilindro(ctx, zone) {
+    var x = zone.x;
+    var y = zone.y;
+    var w = zone.w;
+    var h = zone.h;
+    var g = ctx.createLinearGradient(x, y, x + w, y);
+    g.addColorStop(0, "rgba(40,40,40,0.38)");
+    g.addColorStop(0.18, "rgba(40,40,40,0.08)");
+    g.addColorStop(0.5, "rgba(255,255,255,0.12)");
+    g.addColorStop(0.82, "rgba(40,40,40,0.08)");
+    g.addColorStop(1, "rgba(40,40,40,0.38)");
+    ctx.fillStyle = g;
+    ctx.fillRect(x, y, w, h);
+
+    var vg = ctx.createLinearGradient(x, y, x, y + h);
+    vg.addColorStop(0, "rgba(255,255,255,0.14)");
+    vg.addColorStop(0.45, "rgba(255,255,255,0)");
+    vg.addColorStop(1, "rgba(30,30,30,0.16)");
+    ctx.fillStyle = vg;
+    ctx.fillRect(x, y, w, h);
   }
 
   function prepararArteCaneca(userImg, opts, tw, th, done) {
@@ -390,27 +440,33 @@
     g.fillRect(0, 0, tw, th);
 
     if (userImg) {
-      var scale = Math.max(tw / userImg.width, th / userImg.height);
+      var scale = Math.max(tw / userImg.width, th / userImg.height) * 1.05;
       var iw = userImg.width * scale;
       var ih = userImg.height * scale;
       g.drawImage(userImg, (tw - iw) / 2, (th - ih) / 2, iw, ih);
     }
 
     if (opts.texto) {
-      var bandH = userImg ? Math.round(th * 0.28) : th;
+      var bandH = userImg ? Math.round(th * 0.26) : th;
       var by = userImg ? th - bandH : 0;
       if (userImg) {
-        g.fillStyle = "rgba(0,0,0,0.4)";
+        g.fillStyle = "rgba(0,0,0,0.42)";
         g.fillRect(0, by, tw, bandH);
       }
-      g.fillStyle = userImg || opts.cor !== "branca" ? "#ffffff" : "#9d426b";
-      g.font = "bold " + Math.max(18, Math.round(th * 0.14)) + "px Trebuchet MS, Arial, sans-serif";
+      g.fillStyle = userImg ? "#ffffff" : "#9d426b";
+      g.font =
+        "bold " +
+        Math.max(22, Math.round(th * 0.13)) +
+        "px Trebuchet MS, Arial, sans-serif";
       g.textAlign = "center";
       g.textBaseline = "middle";
       g.fillText(String(opts.texto).slice(0, 28), tw / 2, by + bandH / 2);
     } else if (!userImg) {
       g.fillStyle = "#9d426b";
-      g.font = "bold " + Math.max(18, Math.round(th * 0.16)) + "px Trebuchet MS, Arial, sans-serif";
+      g.font =
+        "bold " +
+        Math.max(22, Math.round(th * 0.15)) +
+        "px Trebuchet MS, Arial, sans-serif";
       g.textAlign = "center";
       g.textBaseline = "middle";
       g.fillText("Sua arte aqui", tw / 2, th / 2);
@@ -425,24 +481,19 @@
 
   function aplicarArteNaZona(ctx, art, zone) {
     ctx.save();
-    ctx.beginPath();
-    ctx.ellipse(
-      zone.x + zone.w / 2,
-      zone.y + zone.h / 2,
-      zone.w / 2,
-      zone.h / 2,
-      0,
-      0,
-      Math.PI * 2
-    );
+    clipZonaCaneca(ctx, zone);
     ctx.clip();
-    ctx.fillStyle = "#f4f4f4";
-    ctx.fillRect(zone.x, zone.y, zone.w, zone.h);
+
+    /* Apaga o placeholder da foto-base */
+    ctx.fillStyle = "#f7f7f7";
+    ctx.fillRect(zone.x - 2, zone.y - 2, zone.w + 4, zone.h + 4);
+
     ctx.globalCompositeOperation = "source-over";
     desenharArteCilindro(ctx, art, zone.x, zone.y, zone.w, zone.h);
-    ctx.globalCompositeOperation = "multiply";
-    ctx.fillStyle = "rgba(210,210,210,0.18)";
-    ctx.fillRect(zone.x, zone.y, zone.w, zone.h);
+
+    ctx.globalCompositeOperation = "soft-light";
+    sombrearCilindro(ctx, zone);
+    ctx.globalCompositeOperation = "source-over";
     ctx.restore();
   }
 
@@ -559,35 +610,44 @@
       ctx.imageSmoothingQuality = "high";
       ctx.drawImage(tpl, 0, 0, W, H);
 
-      /* Zonas de impressão no mockup (frações da foto 438×325) */
+      /*
+       * Zona principal = caneca da frente (arte em volta do corpo).
+       * Zona menor = caneca de trás (mesma arte, escala menor).
+       */
       var zones = [
-        { x: W * 0.175, y: H * 0.3, w: W * 0.255, h: H * 0.4 },
-        { x: W * 0.575, y: H * 0.24, w: W * 0.2, h: H * 0.34 }
+        { x: W * 0.105, y: H * 0.22, w: W * 0.38, h: H * 0.55 },
+        { x: W * 0.545, y: H * 0.2, w: W * 0.27, h: H * 0.42 }
       ];
 
-      prepararArteCaneca(userImg, opts || {}, 360, 360, function (art) {
+      prepararArteCaneca(userImg, opts || {}, 720, 720, function (art) {
         zones.forEach(function (z) {
           aplicarArteNaZona(ctx, art, z);
         });
 
-        var corNota =
-          opts && opts.corRotulo && opts.cor !== "branca"
-            ? " · Cor pedida: " + opts.corRotulo
-            : "";
-        ctx.fillStyle = "rgba(255,255,255,0.88)";
-        roundRect(ctx, W * 0.08, H - 36 * scale / 2 - 8, W * 0.84, 28 * (scale / 2) + 10, 8);
+        ctx.fillStyle = "rgba(255,255,255,0.9)";
+        roundRect(
+          ctx,
+          W * 0.08,
+          H - 36 * (scale / 2) - 8,
+          W * 0.84,
+          28 * (scale / 2) + 10,
+          8
+        );
         ctx.fill();
         ctx.fillStyle = "#9d426b";
-        ctx.font = "bold " + Math.round(13 * scale) + "px Trebuchet MS, Arial, sans-serif";
+        ctx.font =
+          "bold " +
+          Math.round(13 * scale) +
+          "px Trebuchet MS, Arial, sans-serif";
         ctx.textAlign = "center";
         ctx.textBaseline = "middle";
         ctx.fillText(
-          "Prévia ilustrativa · Personalizamos" + corNota,
+          "Prévia ilustrativa · Personalizamos",
           W / 2,
           H - 18 * (scale / 2) - 4
         );
 
-        done(canvas.toDataURL("image/jpeg", 0.92));
+        done(canvas.toDataURL("image/jpeg", 0.94));
       });
     });
   }
