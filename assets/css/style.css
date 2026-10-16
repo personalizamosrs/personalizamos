@@ -1237,6 +1237,7 @@ a.whatsapp-float img {
 	border-radius: 16px;
 	background: #f7eef2;
 	display: block;
+	pointer-events: none;
 }
 .guia.compacta .retrato video {
 	height: 220px;
@@ -1256,21 +1257,21 @@ a.whatsapp-float img {
 .guia-msgs {
 	display: flex;
 	flex-direction: column;
-	gap: 0.45rem;
-	height: 230px;
+	gap: 0.55rem;
+	height: 280px;
 	overflow: auto;
 	-webkit-overflow-scrolling: touch;
 }
 .guia.compacta .guia-msgs {
-	height: 280px;
+	height: 340px;
 }
 .fala {
 	margin: 0;
-	max-width: 92%;
-	padding: 0.55rem 0.75rem;
+	max-width: 94%;
+	padding: 0.7rem 0.9rem;
 	border-radius: 14px;
-	font-size: 0.95rem;
-	line-height: 1.45;
+	font-size: 1.08rem;
+	line-height: 1.5;
 }
 .fala-guia {
 	background: #f7eef2;
@@ -1284,51 +1285,74 @@ a.whatsapp-float img {
 .fala-guia a.guia-wa {
 	display: inline-block;
 	margin-top: 0.35rem;
-	padding: 0.35rem 0.75rem;
+	padding: 0.4rem 0.85rem;
 	background: #25d366;
 	color: #fff !important;
 	border-radius: 999px;
 	text-decoration: none !important;
 	font-weight: 700;
+	font-size: 1.02rem;
 }
 .fala-quem {
 	display: block;
-	font-size: 0.72rem;
+	font-size: 0.82rem;
 	letter-spacing: 0.08em;
 	text-transform: uppercase;
 	font-weight: 700;
 	color: #9d426b;
-	margin-bottom: 0.15rem;
+	margin-bottom: 0.2rem;
 }
 .fala-voce {
 	background: #9d426b;
 	color: #fff;
 	align-self: flex-end;
 }
+.fala-mockup {
+	max-width: 100%;
+	padding: 0.5rem;
+	background: #fff;
+	border: 1px solid #e8d5de;
+}
+.fala-mockup img {
+	display: block;
+	width: 100%;
+	max-width: 280px;
+	height: auto;
+	border-radius: 12px;
+	margin: 0 auto;
+}
 .guia-opcoes {
 	display: flex;
 	flex-wrap: wrap;
-	gap: 0.4rem;
-	margin-top: 0.7rem;
+	gap: 0.5rem;
+	margin-top: 0.75rem;
 }
-.guia-opcoes button {
+.guia-opcoes button,
+.guia-opcoes label.guia-upload {
 	border: 1px solid #9d426b;
 	background: #fff;
 	color: #5d5d5d;
 	border-radius: 999px;
-	padding: 0.42rem 0.8rem;
+	padding: 0.55rem 0.95rem;
 	cursor: pointer;
 	font-weight: 650;
 	font-family: inherit;
-	font-size: 0.9rem;
+	font-size: 1.02rem;
 	line-height: 1.3;
+	display: inline-flex;
+	align-items: center;
 }
 .guia-opcoes button:hover,
-.guia-opcoes button:focus {
+.guia-opcoes button:focus,
+.guia-opcoes label.guia-upload:hover,
+.guia-opcoes label.guia-upload:focus {
 	background: #9d426b;
 	border-color: #9d426b;
 	color: #fff;
 	outline: 0;
+}
+.guia-opcoes input[type="file"] {
+	display: none;
 }
 @media (max-width: 767px) {
 	.guia {
@@ -1341,9 +1365,16 @@ a.whatsapp-float img {
 		height: 200px;
 	}
 	.guia-msgs {
-		height: 200px;
+		height: 260px;
 	}
 	.guia.compacta .guia-msgs {
-		height: 240px;
+		height: 320px;
+	}
+	.fala {
+		font-size: 1.05rem;
+	}
+	.guia-opcoes button,
+	.guia-opcoes label.guia-upload {
+		font-size: 1rem;
 	}
 }

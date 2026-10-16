@@ -198,7 +198,7 @@
       botao("Canecas", function () {
         respostas.cat = "empresa";
         fala("Canecas", "voce");
-        detalharProduto(catalogo.empresa.itens[0], catalogo.empresa);
+        fluxoCaneca();
       });
       botao("Camisetas", function () {
         respostas.cat = "empresa";
@@ -242,7 +242,11 @@
       botao(item.nome, function () {
         respostas.item = item;
         fala(item.nome, "voce");
-        detalharProduto(item, cat);
+        if (item.id === "caneca") {
+          fluxoCaneca();
+        } else {
+          detalharProduto(item, cat);
+        }
       });
     });
     botao("Voltar", function () {
@@ -295,6 +299,339 @@
     });
   }
 
+  function falaMockup(dataUrl) {
+    var p = document.createElement("p");
+    p.className = "fala fala-guia fala-mockup";
+    var nome = document.createElement("span");
+    nome.className = "fala-quem";
+    nome.textContent = pessoa.nome;
+    p.appendChild(nome);
+    var img = document.createElement("img");
+    img.src = dataUrl;
+    img.alt = "Prévia ilustrativa da caneca personalizada";
+    p.appendChild(img);
+    var nota = document.createElement("span");
+    nota.style.display = "block";
+    nota.style.marginTop = "0.4rem";
+    nota.style.fontSize = "0.92rem";
+    nota.innerHTML =
+      "Essa é uma <strong>prévia ilustrativa</strong> — a arte final fica ainda melhor na produção.";
+    p.appendChild(nota);
+    msgs.appendChild(p);
+    msgs.scrollTop = msgs.scrollHeight;
+  }
+
+  function roundRect(ctx, x, y, w, h, r) {
+    var rr = Math.min(r, w / 2, h / 2);
+    ctx.beginPath();
+    ctx.moveTo(x + rr, y);
+    ctx.arcTo(x + w, y, x + w, y + h, rr);
+    ctx.arcTo(x + w, y + h, x, y + h, rr);
+    ctx.arcTo(x, y + h, x, y, rr);
+    ctx.arcTo(x, y, x + w, y, rr);
+    ctx.closePath();
+  }
+
+  function montarMockupCaneca(userImg, opts, done) {
+    var W = 480;
+    var H = 500;
+    var canvas = document.createElement("canvas");
+    canvas.width = W;
+    canvas.height = H;
+    var ctx = canvas.getContext("2d");
+
+    ctx.fillStyle = "#f7eef2";
+    ctx.fillRect(0, 0, W, H);
+
+    var mug =
+      opts.cor === "preta"
+        ? "#2a2a2a"
+        : opts.cor === "magica"
+          ? "#1b1b2e"
+          : "#f8f8f8";
+    var rim =
+      opts.cor === "branca" ? "#e4e4e4" : "#111";
+    var printBg = opts.cor === "branca" ? "#ffffff" : "#333";
+
+    var bx = 105;
+    var by = 70;
+    var bw = 230;
+    var bh = 300;
+
+    // handle
+    ctx.strokeStyle = mug;
+    ctx.lineWidth = 30;
+    ctx.lineCap = "round";
+    ctx.beginPath();
+    ctx.arc(bx + bw + 8, by + bh * 0.48, 58, -1.1, 1.1);
+    ctx.stroke();
+    ctx.strokeStyle = "#f7eef2";
+    ctx.lineWidth = 14;
+    ctx.beginPath();
+    ctx.arc(bx + bw + 8, by + bh * 0.48, 58, -1.1, 1.1);
+    ctx.stroke();
+
+    // body
+    roundRect(ctx, bx, by, bw, bh, 28);
+    ctx.fillStyle = mug;
+    ctx.fill();
+    ctx.strokeStyle = rim;
+    ctx.lineWidth = 2;
+    ctx.stroke();
+
+    // inner rim
+    roundRect(ctx, bx + 14, by + 10, bw - 28, 18, 8);
+    ctx.fillStyle = rim;
+    ctx.fill();
+
+    // print area
+    var px = bx + 34;
+    var py = by + 55;
+    var pw = bw - 68;
+    var ph = bh - 120;
+    roundRect(ctx, px, py, pw, ph, 10);
+    ctx.fillStyle = printBg;
+    ctx.fill();
+    ctx.save();
+    roundRect(ctx, px, py, pw, ph, 10);
+    ctx.clip();
+
+    if (userImg) {
+      var scale = Math.max(pw / userImg.width, ph / userImg.height);
+      var iw = userImg.width * scale;
+      var ih = userImg.height * scale;
+      ctx.drawImage(userImg, px + (pw - iw) / 2, py + (ph - ih) / 2, iw, ih);
+    }
+
+    if (opts.texto) {
+      ctx.fillStyle = opts.cor === "branca" ? "#9d426b" : "#ffffff";
+      ctx.font = "bold 22px Trebuchet MS, Arial, sans-serif";
+      ctx.textAlign = "center";
+      ctx.textBaseline = "middle";
+      var ty = userImg ? py + ph - 28 : py + ph / 2;
+      if (userImg) {
+        ctx.fillStyle = "rgba(0,0,0,0.35)";
+        ctx.fillRect(px, py + ph - 52, pw, 52);
+        ctx.fillStyle = "#fff";
+      }
+      ctx.fillText(String(opts.texto).slice(0, 28), px + pw / 2, ty);
+    } else if (!userImg) {
+      ctx.fillStyle = opts.cor === "branca" ? "#9d426b" : "#fff";
+      ctx.font = "bold 20px Trebuchet MS, Arial, sans-serif";
+      ctx.textAlign = "center";
+      ctx.textBaseline = "middle";
+      ctx.fillText("Sua arte aqui", px + pw / 2, py + ph / 2);
+    }
+    ctx.restore();
+
+    ctx.fillStyle = "#9d426b";
+    ctx.font = "bold 15px Trebuchet MS, Arial, sans-serif";
+    ctx.textAlign = "center";
+    ctx.fillText("Prévia ilustrativa · Personalizamos", W / 2, H - 28);
+
+    done(canvas.toDataURL("image/jpeg", 0.9));
+  }
+
+  function pedirUploadCaneca() {
+    limparOpcoes();
+    fala(
+      "Se desejar, me envia uma <strong>foto</strong> ou o <strong>logotipo</strong> que quer na caneca — eu monto um modelo prévio aqui na conversa.",
+      "guia",
+      true
+    );
+
+    var input = document.createElement("input");
+    input.type = "file";
+    input.accept = "image/*";
+
+    var label = document.createElement("label");
+    label.className = "guia-upload";
+    label.appendChild(document.createTextNode("Enviar foto ou logo"));
+    label.appendChild(input);
+    opcoes.appendChild(label);
+
+    input.addEventListener("change", function () {
+      var file = input.files && input.files[0];
+      if (!file) return;
+      fala("Enviei minha arte", "voce");
+      fala("Perfeito — montando sua prévia…");
+      limparOpcoes();
+
+      var reader = new FileReader();
+      reader.onload = function (ev) {
+        var img = new Image();
+        img.onload = function () {
+          respostas.caneca.arte = img;
+          montarMockupCaneca(img, respostas.caneca, function (url) {
+            falaMockup(url);
+            respostas.caneca.mockup = url;
+            fecharCaneca();
+          });
+        };
+        img.onerror = function () {
+          fala("Não consegui ler essa imagem. Tente outro arquivo (JPG ou PNG).");
+          pedirUploadCaneca();
+        };
+        img.src = ev.target.result;
+      };
+      reader.readAsDataURL(file);
+    });
+
+    botao("Prefiro sem arte agora", function () {
+      fala("Prefiro sem arte agora", "voce");
+      montarMockupCaneca(null, respostas.caneca, function (url) {
+        falaMockup(url);
+        respostas.caneca.mockup = url;
+        fecharCaneca();
+      });
+    });
+  }
+
+  function fecharCaneca() {
+    var c = respostas.caneca || {};
+    var resumo =
+      "Caneca " +
+      (c.corRotulo || "") +
+      ", uso: " +
+      (c.usoRotulo || "") +
+      ", arte: " +
+      (c.arteTipoRotulo || "") +
+      ", qtd: " +
+      (c.qtdRotulo || "");
+    fala(
+      "Gostou da ideia? Posso te ajudar a fechar o pedido. " +
+        linkWhats(
+          "Olá! Falei com a Lu.ia sobre canecas. " +
+            resumo +
+            ". Quero orçamento."
+        ),
+      "guia",
+      true
+    );
+    limparOpcoes();
+    botao("Pedir orçamento no WhatsApp", function () {
+      window.open(
+        "https://api.whatsapp.com/send?phone=5551985435231&text=" +
+          encodeURIComponent(
+            "Olá! Falei com a Lu.ia sobre canecas. " + resumo + ". Quero orçamento."
+          ),
+        "_blank",
+        "noopener,noreferrer"
+      );
+    });
+    botao("Montar outra prévia", function () {
+      fala("Montar outra prévia", "voce");
+      fluxoCaneca();
+    });
+    botao("Escolher outra categoria", function () {
+      fala("Escolher outra categoria", "voce");
+      perguntarObjetivo();
+    });
+    botao("Começar de novo", function () {
+      comecar();
+    });
+  }
+
+  function fluxoCaneca() {
+    respostas.item = catalogo.empresa.itens[0];
+    respostas.caneca = { cor: "branca", corRotulo: "branca" };
+    passo = "caneca";
+    limparOpcoes();
+    fala(
+      'Ótimo! Vamos montar sua <strong>caneca personalizada</strong>. <a href="personalizado_canecas.html">Ver página de canecas</a>',
+      "guia",
+      true
+    );
+    fala("Para que você precisa da caneca?");
+    [
+      { id: "presente", rotulo: "Presente" },
+      { id: "empresa", rotulo: "Empresa / brinde" },
+      { id: "festa", rotulo: "Festa / evento" }
+    ].forEach(function (op) {
+      botao(op.rotulo, function () {
+        respostas.caneca.uso = op.id;
+        respostas.caneca.usoRotulo = op.rotulo;
+        fala(op.rotulo, "voce");
+        canecaPerguntaArte();
+      });
+    });
+  }
+
+  function canecaPerguntaArte() {
+    limparOpcoes();
+    fala("O que você quer colocar na caneca?");
+    [
+      { id: "foto", rotulo: "Foto" },
+      { id: "logo", rotulo: "Logotipo" },
+      { id: "foto_texto", rotulo: "Foto + texto" },
+      { id: "texto", rotulo: "Só texto / nome" }
+    ].forEach(function (op) {
+      botao(op.rotulo, function () {
+        respostas.caneca.arteTipo = op.id;
+        respostas.caneca.arteTipoRotulo = op.rotulo;
+        fala(op.rotulo, "voce");
+        if (op.id === "texto" || op.id === "foto_texto") {
+          canecaPerguntaTexto();
+        } else {
+          canecaPerguntaCor();
+        }
+      });
+    });
+  }
+
+  function canecaPerguntaTexto() {
+    limparOpcoes();
+    fala("Qual texto ou nome quer na caneca? Escolha uma opção rápida:");
+    ["Te amo", "Melhor equipe", "Personalizamos", "Feliz aniversário"].forEach(
+      function (t) {
+        botao(t, function () {
+          respostas.caneca.texto = t;
+          fala(t, "voce");
+          canecaPerguntaCor();
+        });
+      }
+    );
+    botao("Sem texto", function () {
+      respostas.caneca.texto = "";
+      fala("Sem texto", "voce");
+      canecaPerguntaCor();
+    });
+  }
+
+  function canecaPerguntaCor() {
+    limparOpcoes();
+    fala("Qual cor da caneca?");
+    [
+      { id: "branca", rotulo: "Branca" },
+      { id: "preta", rotulo: "Preta" },
+      { id: "magica", rotulo: "Mágica (aparece com calor)" }
+    ].forEach(function (op) {
+      botao(op.rotulo, function () {
+        respostas.caneca.cor = op.id;
+        respostas.caneca.corRotulo = op.rotulo;
+        fala(op.rotulo, "voce");
+        canecaPerguntaQtd();
+      });
+    });
+  }
+
+  function canecaPerguntaQtd() {
+    limparOpcoes();
+    fala("Quantidade aproximada?");
+    [
+      { id: "1-5", rotulo: "1 a 5" },
+      { id: "6-20", rotulo: "6 a 20" },
+      { id: "21+", rotulo: "21 ou mais" }
+    ].forEach(function (op) {
+      botao(op.rotulo, function () {
+        respostas.caneca.qtd = op.id;
+        respostas.caneca.qtdRotulo = op.rotulo;
+        fala(op.rotulo, "voce");
+        pedirUploadCaneca();
+      });
+    });
+  }
+
   function finais() {
     limparOpcoes();
     botao("Começar de novo", function () {
@@ -318,7 +655,9 @@
 
   if (video) {
     video.loop = false;
+    video.controls = false;
     video.removeAttribute("loop");
+    video.removeAttribute("controls");
     video.addEventListener("timeupdate", function () {
       if (!video.duration || !isFinite(video.duration)) return;
       if (video.currentTime >= video.duration - VIDEO_CORTE_ANTES) {
