@@ -768,15 +768,8 @@
       fala("Me informa um WhatsApp válido com DDD, por favor.");
       return;
     }
-    if (!window.__lgpdOk) {
-      fala(
-        "Toque em <strong>Autorizo o contato</strong> ao lado do aviso de dados seguros e envie de novo.",
-        "guia",
-        true
-      );
-      return;
-    }
 
+    window.__lgpdOk = true;
     fala(whats, "voce");
     fala("Enviando sua prévia para a Luana…");
     if (btnEl) btnEl.disabled = true;
@@ -852,8 +845,8 @@
     );
     limparOpcoes();
 
-    var wrap = document.createElement("div");
-    wrap.className = "guia-wa-form";
+    var bloco = document.createElement("div");
+    bloco.className = "guia-wa-bloco";
 
     var input = document.createElement("input");
     input.type = "tel";
@@ -866,11 +859,24 @@
     var btn = document.createElement("button");
     btn.type = "button";
     btn.className = "guia-wa-enviar";
-    btn.textContent = "Enviar";
+    btn.textContent = "Autorizo o contato, enviar";
 
-    wrap.appendChild(input);
-    wrap.appendChild(btn);
-    opcoes.appendChild(wrap);
+    bloco.appendChild(input);
+    bloco.appendChild(btn);
+    opcoes.appendChild(bloco);
+
+    var acoes = document.createElement("div");
+    acoes.className = "guia-wa-acoes";
+    opcoes.appendChild(acoes);
+
+    function botaoAcao(rotulo, onClick) {
+      var b = document.createElement("button");
+      b.type = "button";
+      b.textContent = rotulo;
+      b.addEventListener("click", onClick);
+      acoes.appendChild(b);
+      return b;
+    }
 
     btn.addEventListener("click", function () {
       enviarLeadCaneca(input.value, btn);
@@ -882,11 +888,11 @@
       }
     });
 
-    botao("Refazer modelo", function () {
+    botaoAcao("Refazer modelo", function () {
       fala("Refazer modelo", "voce");
       pedirUploadCaneca();
     });
-    botao("Escolher outra categoria", function () {
+    botaoAcao("Escolher outra categoria", function () {
       fala("Escolher outra categoria", "voce");
       perguntarObjetivo();
     });
@@ -1009,15 +1015,6 @@
     });
     video.addEventListener("ended", function () {
       finalizarVideo();
-    });
-  }
-
-  var lgpdBtn = document.getElementById("lgpd-autorizo");
-  if (lgpdBtn) {
-    lgpdBtn.addEventListener("click", function () {
-      window.__lgpdOk = true;
-      lgpdBtn.classList.add("ok");
-      lgpdBtn.textContent = "Autorizado ✓";
     });
   }
 
