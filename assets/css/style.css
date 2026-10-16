@@ -1221,35 +1221,41 @@ a.whatsapp-float img {
 .guia-fotos {
 	display: flex;
 	justify-content: center;
-	padding: 0.75rem 0.75rem 0;
-	background: linear-gradient(180deg, #f7eef2 0%, #fff 100%);
+	padding: 0.55rem 0.55rem 0;
+	background: #fff;
 }
 .guia .retrato {
 	width: min(320px, 100%);
 	text-align: center;
 	color: #5d5d5d;
+	line-height: 0;
 }
 .guia .retrato video {
 	width: 100%;
-	height: 360px;
-	object-fit: contain;
-	object-position: center center;
+	height: auto;
+	max-height: none;
+	aspect-ratio: 16 / 9;
+	object-fit: cover;
+	object-position: center 18%;
 	border-radius: 16px;
-	background: #f7eef2;
+	background: #fff;
 	display: block;
 	pointer-events: none;
 }
 .guia.compacta .retrato video {
-	height: 220px;
+	aspect-ratio: 16 / 9;
+	max-height: 180px;
+	object-position: center 12%;
 }
 .guia .retrato span {
 	display: block;
-	margin: 0.45rem 0 0.3rem;
-	font-size: 1.35rem;
+	margin: 0.55rem 0 0.35rem;
+	font-size: 22px;
 	font-weight: 700;
 	letter-spacing: -0.02em;
 	color: #9d426b;
 	text-transform: none;
+	line-height: 1.2;
 }
 .guia-chat {
 	padding: 0.85rem 0.9rem 1rem;
@@ -1258,21 +1264,21 @@ a.whatsapp-float img {
 .guia-msgs {
 	display: flex;
 	flex-direction: column;
-	gap: 0.6rem;
-	height: 300px;
+	gap: 0.65rem;
+	height: 340px;
 	overflow: auto;
 	-webkit-overflow-scrolling: touch;
 }
 .guia.compacta .guia-msgs {
-	height: 360px;
+	height: 400px;
 }
 .fala {
 	margin: 0;
-	max-width: 94%;
-	padding: 0.8rem 1rem;
+	max-width: 96%;
+	padding: 0.85rem 1rem;
 	border-radius: 14px;
-	font-size: 1.22rem;
-	line-height: 1.45;
+	font-size: 22px;
+	line-height: 1.4;
 }
 .fala-guia {
 	background: #f7eef2;
@@ -1286,22 +1292,22 @@ a.whatsapp-float img {
 .fala-guia a.guia-wa {
 	display: inline-block;
 	margin-top: 0.4rem;
-	padding: 0.45rem 0.95rem;
+	padding: 0.5rem 1rem;
 	background: #25d366;
 	color: #fff !important;
 	border-radius: 999px;
 	text-decoration: none !important;
 	font-weight: 700;
-	font-size: 1.12rem;
+	font-size: 20px;
 }
 .fala-quem {
 	display: block;
-	font-size: 0.95rem;
+	font-size: 16px;
 	letter-spacing: 0;
 	text-transform: none;
 	font-weight: 700;
 	color: #9d426b;
-	margin-bottom: 0.2rem;
+	margin-bottom: 0.25rem;
 }
 .fala-voce {
 	background: #9d426b;
@@ -1334,11 +1340,11 @@ a.whatsapp-float img {
 	background: #fff;
 	color: #5d5d5d;
 	border-radius: 999px;
-	padding: 0.65rem 1.05rem;
+	padding: 0.7rem 1.1rem;
 	cursor: pointer;
 	font-weight: 650;
 	font-family: inherit;
-	font-size: 1.12rem;
+	font-size: 18px;
 	line-height: 1.3;
 	display: inline-flex;
 	align-items: center;
@@ -1359,27 +1365,33 @@ a.whatsapp-float img {
 	.guia {
 		max-width: 100%;
 	}
+	.guia .retrato {
+		width: 100%;
+		max-width: none;
+	}
 	.guia .retrato video {
-		height: 300px;
+		aspect-ratio: 16 / 9;
+		max-height: none;
+		height: auto;
 	}
 	.guia.compacta .retrato video {
-		height: 200px;
+		max-height: 160px;
 	}
 	.guia-msgs {
-		height: 280px;
+		height: 300px;
 	}
 	.guia.compacta .guia-msgs {
-		height: 340px;
+		height: 380px;
 	}
 	.fala {
-		font-size: 1.18rem;
+		font-size: 22px;
 	}
 	.fala-quem {
-		font-size: 0.92rem;
+		font-size: 16px;
 		text-transform: none;
 	}
 	.guia-opcoes button,
 	.guia-opcoes label.guia-upload {
-		font-size: 1.08rem;
+		font-size: 17px;
 	}
 }
