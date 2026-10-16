@@ -700,78 +700,126 @@
     return { texto: data + " " + hora, arquivo: arquivo };
   }
 
-  var FORMSUBMIT_URL =
-    "https://formsubmit.co/ajax/bd6dd2e7219cafb28cbd932ad40a2b2a";
+  /* Sem /ajax/ — só o POST clássico entrega anexo. Confirmação via _next. */
+  var FORMSUBMIT_POST =
+    "https://formsubmit.co/bd6dd2e7219cafb28cbd932ad40a2b2a";
+  var FORMSUBMIT_NEXT = "https://personalizamos.com.br/assets/envio-ok.html";
 
   /**
-   * FormSubmit via AJAX + FormData.
-   * Precisa de _url / origem do site; resposta JSON confirma sucesso de verdade.
+   * Multipart clássico em iframe oculto (com anexo).
+   * FormSubmit redireciona para envio-ok.html → aí confirmamos sucesso.
    */
   function enviarFormularioCaneca(campos, arquivo, done, fail) {
-    function montarFormData(comArquivo) {
-      var fd = new FormData();
-      Object.keys(campos).forEach(function (chave) {
-        fd.append(chave, campos[chave] == null ? "" : String(campos[chave]));
-      });
-      fd.append("_url", "https://personalizamos.com.br/");
-      fd.append("_captcha", "false");
-      if (comArquivo && arquivo) {
-        fd.append(
-          "attachment",
-          arquivo,
-          arquivo.name || campos.nome_arquivo || "previa-caneca.jpg"
-        );
-      }
-      return fd;
-    }
+    var iframe = document.createElement("iframe");
+    var nomeFrame = "guia-envio-" + Date.now();
+    iframe.name = nomeFrame;
+    iframe.setAttribute("aria-hidden", "true");
+    iframe.style.cssText =
+      "position:absolute;left:-9999px;width:1px;height:1px;opacity:0;border:0";
 
-    function postar(fd) {
-      return fetch(FORMSUBMIT_URL, {
-        method: "POST",
-        body: fd,
-        headers: { Accept: "application/json" }
-      }).then(function (res) {
-        return res.json().then(
-          function (json) {
-            return { httpOk: res.ok, json: json };
-          },
-          function () {
-            return { httpOk: res.ok, json: null };
-          }
-        );
-      });
-    }
+    var form = document.createElement("form");
+    form.method = "POST";
+    form.action = FORMSUBMIT_POST;
+    form.enctype = "multipart/form-data";
+    form.setAttribute("enctype", "multipart/form-data");
+    form.encoding = "multipart/form-data";
+    form.target = nomeFrame;
+    form.acceptCharset = "UTF-8";
+    form.style.display = "none";
 
-    function sucesso(res) {
-      if (!res) return false;
-      var j = res.json;
-      if (j && (j.success === true || j.success === "true")) return true;
-      return false;
-    }
+    var todos = {};
+    Object.keys(campos).forEach(function (k) {
+      todos[k] = campos[k];
+    });
+    todos._url = "https://personalizamos.com.br/";
+    todos._captcha = "false";
+    todos._next = FORMSUBMIT_NEXT;
 
-    /* Tenta com anexo; se o FormSubmit recusar, reenvia só os dados (e-mail chega). */
-    postar(montarFormData(true))
-      .then(function (res) {
-        if (sucesso(res)) {
-          done();
-          return null;
+    Object.keys(todos).forEach(function (chave) {
+      var input = document.createElement("input");
+      input.type = "hidden";
+      input.name = chave;
+      input.value = todos[chave] == null ? "" : String(todos[chave]);
+      form.appendChild(input);
+    });
+
+    if (arquivo) {
+      try {
+        var fileInput = document.createElement("input");
+        fileInput.type = "file";
+        fileInput.name = "attachment";
+        fileInput.accept = "image/jpeg,image/png,image/*";
+        var transferencia = new DataTransfer();
+        transferencia.items.add(arquivo);
+        fileInput.files = transferencia.files;
+        if (!fileInput.files || fileInput.files.length < 1) {
+          fail();
+          return;
         }
-        if (arquivo) {
-          campos.aviso_anexo =
-            (campos.aviso_anexo ? campos.aviso_anexo + " | " : "") +
-            "Anexo não aceito neste envio — dados do WhatsApp seguem no e-mail.";
-          return postar(montarFormData(false));
-        }
-        throw new Error("formsubmit_fail");
-      })
-      .then(function (res2) {
-        if (res2 === null) return;
-        if (sucesso(res2)) done();
-        else fail();
-      })
-      .catch(function () {
+        form.appendChild(fileInput);
+      } catch (erro) {
         fail();
-      });
+        return;
+      }
+    }
+
+    var acabou = false;
+    var enviou = false;
+
+    function limparDom() {
+      window.setTimeout(function () {
+        if (form.parentNode) form.parentNode.removeChild(form);
+        if (iframe.parentNode) iframe.parentNode.removeChild(iframe);
+      }, 2000);
+    }
+
+    function finalizar(ok) {
+      if (acabou) return;
+      acabou = true;
+      limparDom();
+      if (ok) done();
+      else fail();
+    }
+
+    function chegouOk() {
+      try {
+        var href = iframe.contentWindow.location.href || "";
+        return href.indexOf("envio-ok") !== -1;
+      } catch (e) {
+        return false;
+      }
+    }
+
+    function disparar() {
+      if (enviou || acabou) return;
+      enviou = true;
+      try {
+        form.submit();
+      } catch (erro) {
+        finalizar(false);
+      }
+    }
+
+    iframe.addEventListener("load", function () {
+      if (!enviou) {
+        disparar();
+        return;
+      }
+      if (chegouOk()) {
+        finalizar(true);
+        return;
+      }
+      /* Ainda no FormSubmit (cross-origin) — espera o _next */
+    });
+
+    document.body.appendChild(iframe);
+    document.body.appendChild(form);
+    window.setTimeout(disparar, 300);
+    window.setTimeout(function () {
+      if (acabou) return;
+      if (chegouOk()) finalizar(true);
+      else finalizar(false);
+    }, 20000);
   }
 
   function enviarLeadCaneca(whatsRaw, btnEl) {
