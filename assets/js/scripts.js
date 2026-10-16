@@ -254,7 +254,7 @@ jQuery(window).load(function() {
 			el = document.createElement('div');
 			el.id = 'pwa-install-bar';
 			el.innerHTML =
-				'<span>App</span>' +
+				'<span>Instalar APP para Android e iOS</span>' +
 				'<button type="button" id="pwa-install-btn">Instalar</button>' +
 				'<button type="button" id="pwa-install-close" aria-label="Fechar">×</button>';
 			document.body.appendChild(el);
