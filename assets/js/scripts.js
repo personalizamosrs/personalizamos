@@ -21,7 +21,7 @@ jQuery(document).ready(function() {
 	new WOW().init();
 	
 	/*
-	    Slider (só se existir na página — home usa a assistente Pê)
+	    Slider (só se existir na página — home usa a assistente Lu.ia)
 	*/
 	if ($('.flexslider').length) {
 		$('.flexslider').flexslider({

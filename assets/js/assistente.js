@@ -11,10 +11,14 @@
     encodeURIComponent("Olá! Falei com a assistente do site e quero um orçamento.");
 
   var pessoa = {
-    nome: "Pê",
+    nome: "Lu.ia",
     abertura:
-      "Oi! Eu sou a <strong>Pê</strong>, assistente da Personalizamos. Vou te ajudar a escolher o produto certo — canecas, camisetas, PVC, brindes, festa e muito mais. Atendemos <strong>Porto Alegre e Canoas - RS</strong>."
+      "Oi! Eu sou a <strong>Lu.ia</strong>, assistente da Personalizamos. Vou te ajudar a escolher o produto certo — canecas, camisetas, PVC, brindes, festa e muito mais. Atendemos <strong>Porto Alegre e Canoas - RS</strong>."
   };
+
+  /* Para um pouco antes do fim (últimos frames falhados) */
+  var VIDEO_CORTE_ANTES = 1.1;
+  var videoFinalizado = false;
 
   var catalogo = {
     festa: {
@@ -137,7 +141,7 @@
   function linkWhats(textoExtra) {
     var href =
       "https://api.whatsapp.com/send?phone=5551985435231&text=" +
-      encodeURIComponent(textoExtra || "Olá! Falei com a Pê no site e quero um orçamento.");
+      encodeURIComponent(textoExtra || "Olá! Falei com a Lu.ia no site e quero um orçamento.");
     return (
       '<a class="guia-wa" href="' +
       href +
@@ -145,10 +149,27 @@
     );
   }
 
+  function finalizarVideo() {
+    if (!video || videoFinalizado) return;
+    videoFinalizado = true;
+    try {
+      video.pause();
+      if (video.duration && isFinite(video.duration)) {
+        var fim = Math.max(0, video.duration - VIDEO_CORTE_ANTES);
+        video.currentTime = fim;
+      }
+    } catch (e) {}
+    painel.classList.add("compacta");
+  }
+
   function tocarVideo() {
     if (!video) return;
     try {
+      video.loop = false;
+      video.removeAttribute("loop");
+      videoFinalizado = false;
       video.currentTime = 0;
+      painel.classList.remove("compacta");
       var playPromise = video.play();
       if (playPromise && playPromise.catch) playPromise.catch(function () {});
     } catch (e) {}
@@ -293,14 +314,19 @@
     tocarVideo();
     fala(pessoa.abertura, "guia", true);
     perguntarObjetivo();
-    setTimeout(function () {
-      painel.classList.add("compacta");
-    }, 1200);
   }
 
   if (video) {
-    video.addEventListener("click", function () {
-      tocarVideo();
+    video.loop = false;
+    video.removeAttribute("loop");
+    video.addEventListener("timeupdate", function () {
+      if (!video.duration || !isFinite(video.duration)) return;
+      if (video.currentTime >= video.duration - VIDEO_CORTE_ANTES) {
+        finalizarVideo();
+      }
+    });
+    video.addEventListener("ended", function () {
+      finalizarVideo();
     });
   }
 

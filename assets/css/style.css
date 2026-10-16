@@ -1119,7 +1119,7 @@ a.whatsapp-float img {
 	padding: 0 2px;
 }
 
-/* Assistente Pê (home — substitui o carrossel) */
+/* Assistente Lu.ia (home — substitui o carrossel) */
 .guia-home-wrap {
 	padding-bottom: 10px;
 }
@@ -1147,15 +1147,15 @@ a.whatsapp-float img {
 }
 .guia .retrato video {
 	width: 100%;
-	height: 380px;
-	object-fit: cover;
+	height: 420px;
+	object-fit: contain;
 	object-position: center center;
 	border-radius: 16px;
-	background: #2a2a2a;
+	background: #f7eef2;
 	display: block;
 }
 .guia.compacta .retrato video {
-	height: 168px;
+	height: 260px;
 }
 .guia .retrato span {
 	display: block;
@@ -1248,10 +1248,10 @@ a.whatsapp-float img {
 }
 @media (max-width: 767px) {
 	.guia .retrato video {
-		height: 260px;
+		height: 320px;
 	}
 	.guia.compacta .retrato video {
-		height: 140px;
+		height: 220px;
 	}
 	.guia-msgs {
 		height: 200px;
