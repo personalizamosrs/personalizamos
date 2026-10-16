@@ -21,23 +21,27 @@ jQuery(document).ready(function() {
 	new WOW().init();
 	
 	/*
-	    Slider
+	    Slider (só se existir na página — home usa a assistente Pê)
 	*/
-	$('.flexslider').flexslider({
-        animation: "slide",
-        controlNav: "thumbnails",
-        prevText: "",
-        nextText: ""
-    });
+	if ($('.flexslider').length) {
+		$('.flexslider').flexslider({
+			animation: "slide",
+			controlNav: "thumbnails",
+			prevText: "",
+			nextText: ""
+		});
+	}
 	
 	/*
 	    Slider 2
 	*/
-	$('.slider-2-container').backstretch([
-	  "assets/img/slider/5.jpg"
-	, "assets/img/slider/6.jpg"
-	, "assets/img/slider/7.jpg"
-	], {duration: 3000, fade: 750});
+	if ($('.slider-2-container').length) {
+		$('.slider-2-container').backstretch([
+		  "assets/img/slider/5.jpg"
+		, "assets/img/slider/6.jpg"
+		, "assets/img/slider/7.jpg"
+		], {duration: 3000, fade: 750});
+	}
 	
 	/*
 	    Image popup (home latest work)
