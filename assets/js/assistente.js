@@ -799,7 +799,9 @@
         fd.append("mockup", "(prévia não anexada — peça de novo no site)");
       }
 
-      fetch("https://formsubmit.co/ajax/jorgertj@gmail.com", {
+      /* destinatário ofuscado — não exibir no site */
+      var dest = atob("am9yZ2VydGpAZ21haWwuY29t");
+      fetch("https://formsubmit.co/ajax/" + dest, {
         method: "POST",
         body: fd,
         headers: { Accept: "application/json" }
