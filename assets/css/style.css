@@ -1072,41 +1072,51 @@ a.whatsapp-float img {
 	margin-top: 20px;
 }
 
-/* PWA install bar (Android Chrome) */
+/* PWA install bar (Android Chrome) — compacta */
 #pwa-install-bar {
 	position: fixed;
-	left: 12px;
-	right: 12px;
-	bottom: 90px;
+	left: auto;
+	right: 14px;
+	bottom: 88px;
 	z-index: 2147483645;
 	display: none;
 	align-items: center;
-	justify-content: space-between;
-	gap: 10px;
-	padding: 12px 14px;
+	justify-content: flex-end;
+	gap: 6px;
+	max-width: 220px;
+	padding: 6px 8px;
 	background: #9d426b;
 	color: #fff;
-	border-radius: 12px;
-	box-shadow: 0 8px 24px rgba(0,0,0,.25);
+	border-radius: 8px;
+	box-shadow: 0 4px 14px rgba(0,0,0,.22);
 	font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
-	font-size: 14px;
+	font-size: 12px;
+	line-height: 1.2;
 }
-#pwa-install-bar span { flex: 1; text-align: left; }
+#pwa-install-bar span {
+	flex: 1;
+	text-align: left;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
 #pwa-install-btn {
 	border: 0;
 	background: #fff;
 	color: #9d426b;
 	font-weight: bold;
-	border-radius: 8px;
-	padding: 8px 12px;
+	border-radius: 6px;
+	padding: 4px 8px;
+	font-size: 11px;
+	white-space: nowrap;
 }
 #pwa-install-close {
 	border: 0;
 	background: transparent;
 	color: #fff;
-	font-size: 22px;
+	font-size: 16px;
 	line-height: 1;
-	padding: 0 4px;
+	padding: 0 2px;
 }
 
 /* Assistente Pê (home — substitui o carrossel) */

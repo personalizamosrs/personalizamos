@@ -254,8 +254,8 @@ jQuery(window).load(function() {
 			el = document.createElement('div');
 			el.id = 'pwa-install-bar';
 			el.innerHTML =
-				'<span>Instale o app da Personalizamos</span>' +
-				'<button type="button" id="pwa-install-btn">Instalar app</button>' +
+				'<span>App</span>' +
+				'<button type="button" id="pwa-install-btn">Instalar</button>' +
 				'<button type="button" id="pwa-install-close" aria-label="Fechar">×</button>';
 			document.body.appendChild(el);
 			document.getElementById('pwa-install-close').addEventListener('click', function () {
