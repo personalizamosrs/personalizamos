@@ -15,7 +15,7 @@
     abertura: "Oi! Sou a <strong>Lu.ia</strong>. O que você precisa?"
   };
 
-  /* Prévia fotográfica — piloto só em canecas */
+  /* Prévia fotográfica — fluxo de canecas */
   var MOCKUP_CANECA_SRC = "assets/img/mockup-caneca.png";
   var mockupCanecaTpl = null;
   var mockupCanecaTplFailed = false;
@@ -324,7 +324,7 @@
     nota.style.marginTop = "0.4rem";
     nota.style.fontSize = "0.92rem";
     nota.innerHTML =
-      "Prévia ilustrativa (piloto de canecas) — a arte final é ajustada na produção e não é pronta para impressão.";
+      "Prévia ilustrativa — a arte final é ajustada na produção.";
     p.appendChild(nota);
     msgs.appendChild(p);
     msgs.scrollTop = msgs.scrollHeight;
@@ -582,7 +582,7 @@
         ctx.textAlign = "center";
         ctx.textBaseline = "middle";
         ctx.fillText(
-          "Prévia ilustrativa · piloto canecas · Personalizamos" + corNota,
+          "Prévia ilustrativa · Personalizamos" + corNota,
           W / 2,
           H - 18 * (scale / 2) - 4
         );
@@ -595,7 +595,7 @@
   function pedirUploadCaneca() {
     limparOpcoes();
     fala(
-      "Se desejar, me envia uma <strong>foto</strong> ou o <strong>logotipo</strong> — eu monto uma <strong>prévia fotográfica</strong> da caneca aqui no chat (piloto).",
+      "Se desejar, me envia uma <strong>foto</strong> ou o <strong>logotipo</strong> — eu monto uma <strong>prévia</strong> da caneca aqui no chat.",
       "guia",
       true
     );
@@ -698,7 +698,7 @@
     passo = "caneca";
     limparOpcoes();
     fala(
-      'Ótimo! Neste <strong>piloto</strong> você monta uma prévia com foto ou logo na <strong>caneca</strong> (só este produto por enquanto). <a href="personalizado_canecas.html">Ver página de canecas</a>',
+      'Ótimo! Vamos montar sua <strong>caneca</strong> com foto ou logo. <a href="personalizado_canecas.html">Ver página de canecas</a>',
       "guia",
       true
     );
