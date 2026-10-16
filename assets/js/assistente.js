@@ -700,97 +700,78 @@
     return { texto: data + " " + hora, arquivo: arquivo };
   }
 
+  var FORMSUBMIT_URL =
+    "https://formsubmit.co/ajax/bd6dd2e7219cafb28cbd932ad40a2b2a";
+
   /**
-   * FormSubmit: /ajax/ descarta anexo.
-   * Envio multipart clássico via iframe + FormData (arquivo com nome telefone_datahora.jpg).
+   * FormSubmit via AJAX + FormData.
+   * Precisa de _url / origem do site; resposta JSON confirma sucesso de verdade.
    */
   function enviarFormularioCaneca(campos, arquivo, done, fail) {
-    var iframe = document.createElement("iframe");
-    var nomeFrame = "guia-envio-" + Date.now();
-    iframe.name = nomeFrame;
-    iframe.setAttribute("aria-hidden", "true");
-    iframe.style.cssText =
-      "position:absolute;left:-9999px;width:1px;height:1px;opacity:0;border:0";
+    function montarFormData(comArquivo) {
+      var fd = new FormData();
+      Object.keys(campos).forEach(function (chave) {
+        fd.append(chave, campos[chave] == null ? "" : String(campos[chave]));
+      });
+      fd.append("_url", "https://personalizamos.com.br/");
+      fd.append("_captcha", "false");
+      if (comArquivo && arquivo) {
+        fd.append(
+          "attachment",
+          arquivo,
+          arquivo.name || campos.nome_arquivo || "previa-caneca.jpg"
+        );
+      }
+      return fd;
+    }
 
-    var form = document.createElement("form");
-    form.method = "POST";
-    form.action = "https://formsubmit.co/bd6dd2e7219cafb28cbd932ad40a2b2a";
-    form.enctype = "multipart/form-data";
-    form.setAttribute("enctype", "multipart/form-data");
-    form.encoding = "multipart/form-data";
-    form.target = nomeFrame;
-    form.acceptCharset = "UTF-8";
-    form.style.display = "none";
+    function postar(fd) {
+      return fetch(FORMSUBMIT_URL, {
+        method: "POST",
+        body: fd,
+        headers: { Accept: "application/json" }
+      }).then(function (res) {
+        return res.json().then(
+          function (json) {
+            return { httpOk: res.ok, json: json };
+          },
+          function () {
+            return { httpOk: res.ok, json: null };
+          }
+        );
+      });
+    }
 
-    Object.keys(campos).forEach(function (chave) {
-      var input = document.createElement("input");
-      input.type = "hidden";
-      input.name = chave;
-      input.value = campos[chave] == null ? "" : String(campos[chave]);
-      form.appendChild(input);
-    });
+    function sucesso(res) {
+      if (!res) return false;
+      var j = res.json;
+      if (j && (j.success === true || j.success === "true")) return true;
+      return false;
+    }
 
-    if (arquivo) {
-      try {
-        var fileInput = document.createElement("input");
-        fileInput.type = "file";
-        fileInput.name = "attachment";
-        fileInput.accept = "image/jpeg,image/png,image/*";
-        var transferencia = new DataTransfer();
-        transferencia.items.add(arquivo);
-        fileInput.files = transferencia.files;
-        if (!fileInput.files || fileInput.files.length < 1) {
-          fail();
-          return;
+    /* Tenta com anexo; se o FormSubmit recusar, reenvia só os dados (e-mail chega). */
+    postar(montarFormData(true))
+      .then(function (res) {
+        if (sucesso(res)) {
+          done();
+          return null;
         }
-        form.appendChild(fileInput);
-      } catch (erro) {
+        if (arquivo) {
+          campos.aviso_anexo =
+            (campos.aviso_anexo ? campos.aviso_anexo + " | " : "") +
+            "Anexo não aceito neste envio — dados do WhatsApp seguem no e-mail.";
+          return postar(montarFormData(false));
+        }
+        throw new Error("formsubmit_fail");
+      })
+      .then(function (res2) {
+        if (res2 === null) return;
+        if (sucesso(res2)) done();
+        else fail();
+      })
+      .catch(function () {
         fail();
-        return;
-      }
-    }
-
-    var acabou = false;
-    var enviou = false;
-    function limparDom() {
-      window.setTimeout(function () {
-        if (form.parentNode) form.parentNode.removeChild(form);
-        if (iframe.parentNode) iframe.parentNode.removeChild(iframe);
-      }, 2500);
-    }
-    function finalizar(ok) {
-      if (acabou) return;
-      acabou = true;
-      limparDom();
-      if (ok) done();
-      else fail();
-    }
-    function disparar() {
-      if (enviou || acabou) return;
-      enviou = true;
-      try {
-        form.submit();
-      } catch (erro) {
-        finalizar(false);
-      }
-    }
-
-    /* 1º load = iframe vazio; 2º = resposta do FormSubmit */
-    iframe.addEventListener("load", function () {
-      if (!enviou) {
-        disparar();
-        return;
-      }
-      finalizar(true);
-    });
-
-    document.body.appendChild(iframe);
-    document.body.appendChild(form);
-    window.setTimeout(disparar, 400);
-    window.setTimeout(function () {
-      if (!acabou && enviou) finalizar(true);
-      else if (!acabou) finalizar(false);
-    }, 18000);
+      });
   }
 
   function enviarLeadCaneca(whatsRaw, btnEl) {
@@ -820,7 +801,6 @@
       var campos = {
         _subject:
           "WhatsApp " + digits + " — prévia caneca Lu.ia — " + quando.texto,
-        _captcha: "false",
         origem: "https://personalizamos.com.br/ (Lu.ia)",
         whatsapp: digits,
         telefone: digits,
