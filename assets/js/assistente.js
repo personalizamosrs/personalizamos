@@ -15,6 +15,11 @@
     abertura: "Oi! Sou a <strong>Lu.ia</strong>. O que você precisa?"
   };
 
+  /* Prévia fotográfica — piloto só em canecas */
+  var MOCKUP_CANECA_SRC = "assets/img/mockup-caneca.png";
+  var mockupCanecaTpl = null;
+  var mockupCanecaTplFailed = false;
+
   /* Para um pouco antes do fim (últimos frames falhados) */
   var VIDEO_CORTE_ANTES = 1.1;
   var videoFinalizado = false;
@@ -178,6 +183,11 @@
     passo = "objetivo";
     limparOpcoes();
     fala("Me conta: o que você precisa agora?");
+    botao("Canecas personalizadas", function () {
+      respostas.cat = "empresa";
+      fala("Canecas personalizadas", "voce");
+      fluxoCaneca();
+    });
     Object.keys(catalogo).forEach(function (key) {
       botao(catalogo[key].rotulo, function () {
         respostas.cat = key;
@@ -314,7 +324,7 @@
     nota.style.marginTop = "0.4rem";
     nota.style.fontSize = "0.92rem";
     nota.innerHTML =
-      "Essa é uma <strong>prévia ilustrativa</strong> — a arte final fica ainda melhor na produção.";
+      "Prévia ilustrativa (piloto de canecas) — a arte final é ajustada na produção e não é pronta para impressão.";
     p.appendChild(nota);
     msgs.appendChild(p);
     msgs.scrollTop = msgs.scrollHeight;
@@ -331,7 +341,112 @@
     ctx.closePath();
   }
 
-  function montarMockupCaneca(userImg, opts, done) {
+  function carregarTplCaneca(done) {
+    if (mockupCanecaTpl) {
+      done(mockupCanecaTpl);
+      return;
+    }
+    if (mockupCanecaTplFailed) {
+      done(null);
+      return;
+    }
+    var img = new Image();
+    img.onload = function () {
+      mockupCanecaTpl = img;
+      done(img);
+    };
+    img.onerror = function () {
+      mockupCanecaTplFailed = true;
+      done(null);
+    };
+    img.src = MOCKUP_CANECA_SRC;
+  }
+
+  /** Arte com leve curva cilíndrica (faixas verticais). */
+  function desenharArteCilindro(ctx, art, zx, zy, zw, zh) {
+    var cols = Math.max(28, Math.floor(zw));
+    for (var i = 0; i < cols; i++) {
+      var u0 = i / cols;
+      var u1 = (i + 1) / cols;
+      var mid = (u0 + u1) / 2;
+      var bend = Math.cos((mid - 0.5) * Math.PI * 0.85);
+      var hScale = 0.88 + 0.12 * bend;
+      var sh = zh * hScale;
+      var sy = zy + (zh - sh) / 2;
+      var sx = u0 * art.width;
+      var sw = Math.max(0.5, (u1 - u0) * art.width);
+      var dx = zx + u0 * zw;
+      var dw = Math.ceil((u1 - u0) * zw) + 1;
+      ctx.drawImage(art, sx, 0, sw, art.height, dx, sy, dw, sh);
+    }
+  }
+
+  function prepararArteCaneca(userImg, opts, tw, th, done) {
+    var c = document.createElement("canvas");
+    c.width = tw;
+    c.height = th;
+    var g = c.getContext("2d");
+    g.fillStyle = "#ffffff";
+    g.fillRect(0, 0, tw, th);
+
+    if (userImg) {
+      var scale = Math.max(tw / userImg.width, th / userImg.height);
+      var iw = userImg.width * scale;
+      var ih = userImg.height * scale;
+      g.drawImage(userImg, (tw - iw) / 2, (th - ih) / 2, iw, ih);
+    }
+
+    if (opts.texto) {
+      var bandH = userImg ? Math.round(th * 0.28) : th;
+      var by = userImg ? th - bandH : 0;
+      if (userImg) {
+        g.fillStyle = "rgba(0,0,0,0.4)";
+        g.fillRect(0, by, tw, bandH);
+      }
+      g.fillStyle = userImg || opts.cor !== "branca" ? "#ffffff" : "#9d426b";
+      g.font = "bold " + Math.max(18, Math.round(th * 0.14)) + "px Trebuchet MS, Arial, sans-serif";
+      g.textAlign = "center";
+      g.textBaseline = "middle";
+      g.fillText(String(opts.texto).slice(0, 28), tw / 2, by + bandH / 2);
+    } else if (!userImg) {
+      g.fillStyle = "#9d426b";
+      g.font = "bold " + Math.max(18, Math.round(th * 0.16)) + "px Trebuchet MS, Arial, sans-serif";
+      g.textAlign = "center";
+      g.textBaseline = "middle";
+      g.fillText("Sua arte aqui", tw / 2, th / 2);
+    }
+
+    var out = new Image();
+    out.onload = function () {
+      done(out);
+    };
+    out.src = c.toDataURL("image/png");
+  }
+
+  function aplicarArteNaZona(ctx, art, zone) {
+    ctx.save();
+    ctx.beginPath();
+    ctx.ellipse(
+      zone.x + zone.w / 2,
+      zone.y + zone.h / 2,
+      zone.w / 2,
+      zone.h / 2,
+      0,
+      0,
+      Math.PI * 2
+    );
+    ctx.clip();
+    ctx.fillStyle = "#f4f4f4";
+    ctx.fillRect(zone.x, zone.y, zone.w, zone.h);
+    ctx.globalCompositeOperation = "source-over";
+    desenharArteCilindro(ctx, art, zone.x, zone.y, zone.w, zone.h);
+    ctx.globalCompositeOperation = "multiply";
+    ctx.fillStyle = "rgba(210,210,210,0.18)";
+    ctx.fillRect(zone.x, zone.y, zone.w, zone.h);
+    ctx.restore();
+  }
+
+  function montarMockupCanecaDesenho(userImg, opts, done) {
     var W = 480;
     var H = 500;
     var canvas = document.createElement("canvas");
@@ -348,8 +463,7 @@
         : opts.cor === "magica"
           ? "#1b1b2e"
           : "#f8f8f8";
-    var rim =
-      opts.cor === "branca" ? "#e4e4e4" : "#111";
+    var rim = opts.cor === "branca" ? "#e4e4e4" : "#111";
     var printBg = opts.cor === "branca" ? "#ffffff" : "#333";
 
     var bx = 105;
@@ -357,7 +471,6 @@
     var bw = 230;
     var bh = 300;
 
-    // handle
     ctx.strokeStyle = mug;
     ctx.lineWidth = 30;
     ctx.lineCap = "round";
@@ -370,7 +483,6 @@
     ctx.arc(bx + bw + 8, by + bh * 0.48, 58, -1.1, 1.1);
     ctx.stroke();
 
-    // body
     roundRect(ctx, bx, by, bw, bh, 28);
     ctx.fillStyle = mug;
     ctx.fill();
@@ -378,12 +490,10 @@
     ctx.lineWidth = 2;
     ctx.stroke();
 
-    // inner rim
     roundRect(ctx, bx + 14, by + 10, bw - 28, 18, 8);
     ctx.fillStyle = rim;
     ctx.fill();
 
-    // print area
     var px = bx + 34;
     var py = by + 55;
     var pw = bw - 68;
@@ -431,10 +541,61 @@
     done(canvas.toDataURL("image/jpeg", 0.9));
   }
 
+  function montarMockupCaneca(userImg, opts, done) {
+    carregarTplCaneca(function (tpl) {
+      if (!tpl) {
+        montarMockupCanecaDesenho(userImg, opts, done);
+        return;
+      }
+
+      var scale = 2;
+      var W = tpl.width * scale;
+      var H = tpl.height * scale;
+      var canvas = document.createElement("canvas");
+      canvas.width = W;
+      canvas.height = H;
+      var ctx = canvas.getContext("2d");
+      ctx.imageSmoothingEnabled = true;
+      ctx.imageSmoothingQuality = "high";
+      ctx.drawImage(tpl, 0, 0, W, H);
+
+      /* Zonas de impressão no mockup (frações da foto 438×325) */
+      var zones = [
+        { x: W * 0.175, y: H * 0.3, w: W * 0.255, h: H * 0.4 },
+        { x: W * 0.575, y: H * 0.24, w: W * 0.2, h: H * 0.34 }
+      ];
+
+      prepararArteCaneca(userImg, opts || {}, 360, 360, function (art) {
+        zones.forEach(function (z) {
+          aplicarArteNaZona(ctx, art, z);
+        });
+
+        var corNota =
+          opts && opts.corRotulo && opts.cor !== "branca"
+            ? " · Cor pedida: " + opts.corRotulo
+            : "";
+        ctx.fillStyle = "rgba(255,255,255,0.88)";
+        roundRect(ctx, W * 0.08, H - 36 * scale / 2 - 8, W * 0.84, 28 * (scale / 2) + 10, 8);
+        ctx.fill();
+        ctx.fillStyle = "#9d426b";
+        ctx.font = "bold " + Math.round(13 * scale) + "px Trebuchet MS, Arial, sans-serif";
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        ctx.fillText(
+          "Prévia ilustrativa · piloto canecas · Personalizamos" + corNota,
+          W / 2,
+          H - 18 * (scale / 2) - 4
+        );
+
+        done(canvas.toDataURL("image/jpeg", 0.92));
+      });
+    });
+  }
+
   function pedirUploadCaneca() {
     limparOpcoes();
     fala(
-      "Se desejar, me envia uma <strong>foto</strong> ou o <strong>logotipo</strong> que quer na caneca — eu monto um modelo prévio aqui na conversa.",
+      "Se desejar, me envia uma <strong>foto</strong> ou o <strong>logotipo</strong> — eu monto uma <strong>prévia fotográfica</strong> da caneca aqui no chat (piloto).",
       "guia",
       true
     );
@@ -537,7 +698,7 @@
     passo = "caneca";
     limparOpcoes();
     fala(
-      'Ótimo! Vamos montar sua <strong>caneca personalizada</strong>. <a href="personalizado_canecas.html">Ver página de canecas</a>',
+      'Ótimo! Neste <strong>piloto</strong> você monta uma prévia com foto ou logo na <strong>caneca</strong> (só este produto por enquanto). <a href="personalizado_canecas.html">Ver página de canecas</a>',
       "guia",
       true
     );
