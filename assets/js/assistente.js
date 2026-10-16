@@ -17,7 +17,7 @@
   };
 
   /* Prévia — foto real da caneca branca + arte envolvida */
-  var MOCKUP_CANECA_SRC = "assets/img/mockup-caneca-branca.png";
+  var MOCKUP_CANECA_SRC = "assets/img/mockup-caneca-branca.png?v=20261016";
   var mockupCanecaTpl = null;
   var mockupCanecaTplFailed = false;
 
@@ -515,11 +515,11 @@
         ctx.imageSmoothingQuality = "high";
         ctx.drawImage(tpl, 0, 0, W, H);
 
-        /* Face da caneca (corpo, sem a alça) — frações da foto 360×316 */
-        var px = W * 0.18;
-        var py = H * 0.18;
-        var pw = W * 0.46;
-        var ph = H * 0.58;
+        /* Face da caneca (corpo, sem a alça) — foto 225×228, alça à direita */
+        var px = W * 0.37;
+        var py = H * 0.27;
+        var pw = W * 0.31;
+        var ph = H * 0.34;
 
         ctx.save();
         /* máscara levemente arredondada acompanhando o corpo */
@@ -666,6 +666,133 @@
     img.src = dataUrl;
   }
 
+  function doisDigitos(n) {
+    return (n < 10 ? "0" : "") + n;
+  }
+
+  function carimboEnvio() {
+    var d = new Date();
+    var data =
+      doisDigitos(d.getDate()) +
+      "/" +
+      doisDigitos(d.getMonth() + 1) +
+      "/" +
+      d.getFullYear();
+    var hora =
+      doisDigitos(d.getHours()) +
+      ":" +
+      doisDigitos(d.getMinutes()) +
+      ":" +
+      doisDigitos(d.getSeconds());
+    var arquivo =
+      doisDigitos(d.getDate()) +
+      "-" +
+      doisDigitos(d.getMonth() + 1) +
+      "-" +
+      d.getFullYear() +
+      "_" +
+      doisDigitos(d.getHours()) +
+      "h" +
+      doisDigitos(d.getMinutes()) +
+      "m" +
+      doisDigitos(d.getSeconds()) +
+      "s";
+    return { texto: data + " " + hora, arquivo: arquivo };
+  }
+
+  /**
+   * FormSubmit: /ajax/ descarta anexo.
+   * Envio multipart clássico via iframe + FormData (arquivo com nome telefone_datahora.jpg).
+   */
+  function enviarFormularioCaneca(campos, arquivo, done, fail) {
+    var iframe = document.createElement("iframe");
+    var nomeFrame = "guia-envio-" + Date.now();
+    iframe.name = nomeFrame;
+    iframe.setAttribute("aria-hidden", "true");
+    iframe.style.cssText =
+      "position:absolute;left:-9999px;width:1px;height:1px;opacity:0;border:0";
+
+    var form = document.createElement("form");
+    form.method = "POST";
+    form.action = "https://formsubmit.co/bd6dd2e7219cafb28cbd932ad40a2b2a";
+    form.enctype = "multipart/form-data";
+    form.setAttribute("enctype", "multipart/form-data");
+    form.encoding = "multipart/form-data";
+    form.target = nomeFrame;
+    form.acceptCharset = "UTF-8";
+    form.style.display = "none";
+
+    Object.keys(campos).forEach(function (chave) {
+      var input = document.createElement("input");
+      input.type = "hidden";
+      input.name = chave;
+      input.value = campos[chave] == null ? "" : String(campos[chave]);
+      form.appendChild(input);
+    });
+
+    if (arquivo) {
+      try {
+        var fileInput = document.createElement("input");
+        fileInput.type = "file";
+        fileInput.name = "attachment";
+        fileInput.accept = "image/jpeg,image/png,image/*";
+        var transferencia = new DataTransfer();
+        transferencia.items.add(arquivo);
+        fileInput.files = transferencia.files;
+        if (!fileInput.files || fileInput.files.length < 1) {
+          fail();
+          return;
+        }
+        form.appendChild(fileInput);
+      } catch (erro) {
+        fail();
+        return;
+      }
+    }
+
+    var acabou = false;
+    var enviou = false;
+    function limparDom() {
+      window.setTimeout(function () {
+        if (form.parentNode) form.parentNode.removeChild(form);
+        if (iframe.parentNode) iframe.parentNode.removeChild(iframe);
+      }, 2500);
+    }
+    function finalizar(ok) {
+      if (acabou) return;
+      acabou = true;
+      limparDom();
+      if (ok) done();
+      else fail();
+    }
+    function disparar() {
+      if (enviou || acabou) return;
+      enviou = true;
+      try {
+        form.submit();
+      } catch (erro) {
+        finalizar(false);
+      }
+    }
+
+    /* 1º load = iframe vazio; 2º = resposta do FormSubmit */
+    iframe.addEventListener("load", function () {
+      if (!enviou) {
+        disparar();
+        return;
+      }
+      finalizar(true);
+    });
+
+    document.body.appendChild(iframe);
+    document.body.appendChild(form);
+    window.setTimeout(disparar, 400);
+    window.setTimeout(function () {
+      if (!acabou && enviou) finalizar(true);
+      else if (!acabou) finalizar(false);
+    }, 18000);
+  }
+
   function enviarLeadCaneca(whatsRaw, btnEl) {
     var whats = (whatsRaw || "").trim();
     var digits = whats.replace(/\D/g, "");
@@ -681,47 +808,45 @@
 
     var resumo = resumoCaneca();
     var mockup = respostas.caneca && respostas.caneca.mockup;
+    var quando = carimboEnvio();
+    /* Nome do JPG: telefone_data_hora.jpg */
+    var nomeArquivo = digits + "_" + quando.arquivo + ".jpg";
 
-    /* JPEG bem leve (~400px) para anexo no e-mail sem pesar */
-    comprimirMockup(mockup, 400, 0.25, function (blob) {
-      var fd = new FormData();
-      fd.append("_subject", "Lu.ia — prévia de caneca (Personalizamos)");
-      fd.append("_captcha", "false");
-      fd.append("_template", "table");
-      fd.append("origem", "https://personalizamos.com.br/ (Lu.ia)");
-      fd.append("whatsapp", whats);
-      fd.append("whatsapp_digitos", digits);
-      fd.append("resumo", resumo);
-      if (blob) {
-        /* FormSubmit reconhece melhor o nome "attachment" */
-        fd.append("attachment", blob, "previa-caneca.jpg");
-        fd.append(
-          "aviso_anexo",
-          "A prévia da caneca vai em anexo (previa-caneca.jpg)."
-        );
+    comprimirMockup(mockup, 900, 0.82, function (blob) {
+      var campos = {
+        _subject:
+          "WhatsApp " + digits + " — prévia caneca Lu.ia — " + quando.texto,
+        _captcha: "false",
+        origem: "https://personalizamos.com.br/ (Lu.ia)",
+        whatsapp: digits,
+        telefone: digits,
+        whatsapp_digitado: whats,
+        data_hora: quando.texto,
+        nome_arquivo: nomeArquivo,
+        resumo: resumo
+      };
+      var arquivo = null;
+      if (blob && blob.size > 200) {
+        try {
+          arquivo = new File([blob], nomeArquivo, {
+            type: "image/jpeg",
+            lastModified: Date.now()
+          });
+          campos.arquivo = nomeArquivo;
+          campos.tamanho_anexo_kb = String(Math.round(blob.size / 1024));
+        } catch (e1) {
+          campos.aviso_anexo =
+            "Navegador não montou o anexo — nome previsto: " + nomeArquivo;
+        }
       } else {
-        fd.append(
-          "aviso_anexo",
-          "Prévia não gerada — peça ao cliente para reenviar no site."
-        );
+        campos.aviso_anexo =
+          "Prévia não gerada — peça ao cliente para reenviar no site.";
       }
 
-      /*
-       * Endpoint anônimo do FormSubmit (não expõe e-mail no site).
-       * Ativar uma vez pelo botão ACTIVATE FORM no e-mail do FormSubmit.
-       */
-      fetch("https://formsubmit.co/ajax/bd6dd2e7219cafb28cbd932ad40a2b2a", {
-        method: "POST",
-        body: fd,
-        headers: { Accept: "application/json" }
-      })
-        .then(function (r) {
-          if (!r.ok) throw new Error("fail");
-          return r.json().catch(function () {
-            return {};
-          });
-        })
-        .then(function () {
+      enviarFormularioCaneca(
+        campos,
+        arquivo,
+        function () {
           fala(
             "Pronto! A <strong>Luana Collatto</strong> recebeu sua prévia e o WhatsApp. Ela vai melhorar o modelo e te passar o orçamento.",
             "guia",
@@ -735,8 +860,8 @@
           botao("Começar de novo", function () {
             comecar();
           });
-        })
-        .catch(function () {
+        },
+        function () {
           if (btnEl) btnEl.disabled = false;
           fala(
             "Não consegui enviar agora. Você pode falar direto com a gente: " +
@@ -749,7 +874,8 @@
             "guia",
             true
           );
-        });
+        }
+      );
     });
   }
 
