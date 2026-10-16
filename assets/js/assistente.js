@@ -12,8 +12,7 @@
 
   var pessoa = {
     nome: "Lu.ia",
-    abertura:
-      "Oi! Eu sou a <strong>Lu.ia</strong>, assistente da Personalizamos. Vou te ajudar a escolher o produto certo — canecas, camisetas, PVC, brindes, festa e muito mais. Atendemos <strong>Porto Alegre e Canoas - RS</strong>."
+    abertura: "Oi! Sou a <strong>Lu.ia</strong>. O que você precisa?"
   };
 
   /* Para um pouco antes do fim (últimos frames falhados) */
