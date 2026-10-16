@@ -694,7 +694,7 @@
 
   function fluxoCaneca() {
     respostas.item = catalogo.empresa.itens[0];
-    respostas.caneca = { cor: "branca", corRotulo: "branca" };
+    respostas.caneca = { cor: "branca", corRotulo: "Branca" };
     passo = "caneca";
     limparOpcoes();
     fala(
@@ -733,7 +733,7 @@
         if (op.id === "texto" || op.id === "foto_texto") {
           canecaPerguntaTexto();
         } else {
-          canecaPerguntaCor();
+          canecaPerguntaQtd();
         }
       });
     });
@@ -747,31 +747,14 @@
         botao(t, function () {
           respostas.caneca.texto = t;
           fala(t, "voce");
-          canecaPerguntaCor();
+          canecaPerguntaQtd();
         });
       }
     );
     botao("Sem texto", function () {
       respostas.caneca.texto = "";
       fala("Sem texto", "voce");
-      canecaPerguntaCor();
-    });
-  }
-
-  function canecaPerguntaCor() {
-    limparOpcoes();
-    fala("Qual cor da caneca?");
-    [
-      { id: "branca", rotulo: "Branca" },
-      { id: "preta", rotulo: "Preta" },
-      { id: "magica", rotulo: "Mágica (aparece com calor)" }
-    ].forEach(function (op) {
-      botao(op.rotulo, function () {
-        respostas.caneca.cor = op.id;
-        respostas.caneca.corRotulo = op.rotulo;
-        fala(op.rotulo, "voce");
-        canecaPerguntaQtd();
-      });
+      canecaPerguntaQtd();
     });
   }
 
