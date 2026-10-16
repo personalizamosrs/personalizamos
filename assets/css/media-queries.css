@@ -34,9 +34,20 @@
 
 @media (max-width: 767px) {
 	
-	.navbar>.container .navbar-brand { margin-left: 15px; }
+	/* Keep header inside container padding so logo isn't flush to the screen edge */
+	.container > .navbar-header,
+	.container-fluid > .navbar-header {
+		margin-left: 0;
+		margin-right: 0;
+	}
+	.navbar > .container .navbar-brand,
+	.navbar > .container-fluid .navbar-brand {
+		margin-left: 0;
+		padding-left: 15px;
+		background-position: 15px center;
+	}
 	.navbar-collapse { border: 0; }
-	.navbar-toggle { margin-top: 16px; }
+	.navbar-toggle { margin-top: 16px; margin-right: 15px; }
 	.navbar-toggle .icon-bar { background: #5d5d5d; }
 	ul.navbar-nav li a { padding: 15px 20px; text-align: left; }
 	ul.navbar-nav li a br { display: none; }
