@@ -15,10 +15,7 @@
     abertura: "Oi! Sou a <strong>Lu.ia</strong>. O que você precisa?"
   };
 
-  /* Prévia fotográfica — fluxo de canecas */
-  var MOCKUP_CANECA_SRC = "assets/img/mockup-caneca.png";
-  var mockupCanecaTpl = null;
-  var mockupCanecaTplFailed = false;
+  /* Prévia — caneca branca com arte envolvida */
 
   /* Para um pouco antes do fim (últimos frames falhados) */
   var VIDEO_CORTE_ANTES = 1.1;
@@ -341,96 +338,7 @@
     ctx.closePath();
   }
 
-  function carregarTplCaneca(done) {
-    if (mockupCanecaTpl) {
-      done(mockupCanecaTpl);
-      return;
-    }
-    if (mockupCanecaTplFailed) {
-      done(null);
-      return;
-    }
-    var img = new Image();
-    img.onload = function () {
-      mockupCanecaTpl = img;
-      done(img);
-    };
-    img.onerror = function () {
-      mockupCanecaTplFailed = true;
-      done(null);
-    };
-    img.src = MOCKUP_CANECA_SRC;
-  }
-
-  /**
-   * Envolve a arte na face da caneca (projeção cilíndrica).
-   * Cada coluna usa asin para mapear a frente do cilindro e
-   * a altura encolhe nas bordas — parece impressão em volta.
-   */
-  function desenharArteCilindro(ctx, art, zx, zy, zw, zh) {
-    var cols = Math.max(64, Math.floor(zw * 1.2));
-    var cx = zx + zw / 2;
-    for (var i = 0; i < cols; i++) {
-      var t0 = i / cols;
-      var t1 = (i + 1) / cols;
-      var mid = (t0 + t1) / 2;
-      var nx = mid * 2 - 1;
-      if (nx < -1 || nx > 1) continue;
-
-      var angle = Math.asin(Math.max(-1, Math.min(1, nx)));
-      var u = 0.5 + angle / Math.PI;
-      var slice = 1 / cols;
-      var su = (u - slice * 0.55) * art.width;
-      var sw = Math.max(1, slice * 1.15 * art.width);
-
-      var cosA = Math.cos(angle);
-      var hScale = 0.78 + 0.22 * cosA;
-      var sh = zh * hScale;
-      var bow = (1 - cosA) * zh * 0.04;
-      var sy = zy + (zh - sh) / 2 + bow;
-      var dx = zx + t0 * zw;
-      var dw = Math.ceil((t1 - t0) * zw) + 1.25;
-
-      ctx.globalAlpha = 0.55 + 0.45 * cosA;
-      ctx.drawImage(art, su, 0, sw, art.height, dx, sy, dw, sh);
-    }
-    ctx.globalAlpha = 1;
-  }
-
-  function clipZonaCaneca(ctx, zone) {
-    var x = zone.x;
-    var y = zone.y;
-    var w = zone.w;
-    var h = zone.h;
-    var rx = w * 0.42;
-    var ry = h * 0.48;
-    ctx.beginPath();
-    ctx.ellipse(x + w / 2, y + h / 2, rx, ry, 0, 0, Math.PI * 2);
-    ctx.closePath();
-  }
-
-  function sombrearCilindro(ctx, zone) {
-    var x = zone.x;
-    var y = zone.y;
-    var w = zone.w;
-    var h = zone.h;
-    var g = ctx.createLinearGradient(x, y, x + w, y);
-    g.addColorStop(0, "rgba(40,40,40,0.38)");
-    g.addColorStop(0.18, "rgba(40,40,40,0.08)");
-    g.addColorStop(0.5, "rgba(255,255,255,0.12)");
-    g.addColorStop(0.82, "rgba(40,40,40,0.08)");
-    g.addColorStop(1, "rgba(40,40,40,0.38)");
-    ctx.fillStyle = g;
-    ctx.fillRect(x, y, w, h);
-
-    var vg = ctx.createLinearGradient(x, y, x, y + h);
-    vg.addColorStop(0, "rgba(255,255,255,0.14)");
-    vg.addColorStop(0.45, "rgba(255,255,255,0)");
-    vg.addColorStop(1, "rgba(30,30,30,0.16)");
-    ctx.fillStyle = vg;
-    ctx.fillRect(x, y, w, h);
-  }
-
+  /** Prepara arte (foto/logo + texto) em canvas quadrado. */
   function prepararArteCaneca(userImg, opts, tw, th, done) {
     var c = document.createElement("canvas");
     c.width = tw;
@@ -440,23 +348,23 @@
     g.fillRect(0, 0, tw, th);
 
     if (userImg) {
-      var scale = Math.max(tw / userImg.width, th / userImg.height) * 1.05;
+      var scale = Math.max(tw / userImg.width, th / userImg.height);
       var iw = userImg.width * scale;
       var ih = userImg.height * scale;
       g.drawImage(userImg, (tw - iw) / 2, (th - ih) / 2, iw, ih);
     }
 
-    if (opts.texto) {
-      var bandH = userImg ? Math.round(th * 0.26) : th;
+    if (opts && opts.texto) {
+      var bandH = userImg ? Math.round(th * 0.24) : th;
       var by = userImg ? th - bandH : 0;
       if (userImg) {
-        g.fillStyle = "rgba(0,0,0,0.42)";
+        g.fillStyle = "rgba(0,0,0,0.45)";
         g.fillRect(0, by, tw, bandH);
       }
       g.fillStyle = userImg ? "#ffffff" : "#9d426b";
       g.font =
         "bold " +
-        Math.max(22, Math.round(th * 0.13)) +
+        Math.max(26, Math.round(th * 0.12)) +
         "px Trebuchet MS, Arial, sans-serif";
       g.textAlign = "center";
       g.textBaseline = "middle";
@@ -465,7 +373,7 @@
       g.fillStyle = "#9d426b";
       g.font =
         "bold " +
-        Math.max(22, Math.round(th * 0.15)) +
+        Math.max(26, Math.round(th * 0.14)) +
         "px Trebuchet MS, Arial, sans-serif";
       g.textAlign = "center";
       g.textBaseline = "middle";
@@ -479,176 +387,171 @@
     out.src = c.toDataURL("image/png");
   }
 
-  function aplicarArteNaZona(ctx, art, zone) {
-    ctx.save();
-    clipZonaCaneca(ctx, zone);
-    ctx.clip();
+  /**
+   * Arte em volta do cilindro da caneca.
+   * Mapeia a frente (~180°) com asin e escurece as bordas.
+   */
+  function desenharArteCilindro(ctx, art, zx, zy, zw, zh) {
+    var cols = Math.max(120, Math.floor(zw * 1.5));
+    for (var i = 0; i < cols; i++) {
+      var t0 = i / cols;
+      var t1 = (i + 1) / cols;
+      var mid = (t0 + t1) / 2;
+      var nx = mid * 2 - 1;
+      if (nx < -0.995 || nx > 0.995) continue;
 
-    /* Apaga o placeholder da foto-base */
-    ctx.fillStyle = "#f7f7f7";
-    ctx.fillRect(zone.x - 2, zone.y - 2, zone.w + 4, zone.h + 4);
+      var angle = Math.asin(nx);
+      var u = 0.5 + angle / Math.PI;
+      var sliceW = Math.max(1.2, (1 / cols) * art.width * 1.35);
+      var su = u * art.width - sliceW / 2;
+      if (su < 0) su = 0;
+      if (su + sliceW > art.width) su = art.width - sliceW;
 
-    ctx.globalCompositeOperation = "source-over";
-    desenharArteCilindro(ctx, art, zone.x, zone.y, zone.w, zone.h);
+      var cosA = Math.cos(angle);
+      var hScale = 0.82 + 0.18 * cosA;
+      var sh = zh * hScale;
+      var sy = zy + (zh - sh) / 2;
+      var dx = zx + t0 * zw;
+      var dw = Math.ceil((t1 - t0) * zw) + 1.5;
 
-    ctx.globalCompositeOperation = "soft-light";
-    sombrearCilindro(ctx, zone);
-    ctx.globalCompositeOperation = "source-over";
-    ctx.restore();
+      ctx.globalAlpha = 0.62 + 0.38 * cosA;
+      ctx.drawImage(art, su, 0, sliceW, art.height, dx, sy, dw, sh);
+    }
+    ctx.globalAlpha = 1;
   }
 
-  function montarMockupCanecaDesenho(userImg, opts, done) {
-    var W = 480;
-    var H = 500;
-    var canvas = document.createElement("canvas");
-    canvas.width = W;
-    canvas.height = H;
-    var ctx = canvas.getContext("2d");
+  function sombrearArteCaneca(ctx, px, py, pw, ph) {
+    var g = ctx.createLinearGradient(px, py, px + pw, py);
+    g.addColorStop(0, "rgba(0,0,0,0.42)");
+    g.addColorStop(0.14, "rgba(0,0,0,0.12)");
+    g.addColorStop(0.5, "rgba(255,255,255,0.1)");
+    g.addColorStop(0.86, "rgba(0,0,0,0.12)");
+    g.addColorStop(1, "rgba(0,0,0,0.42)");
+    ctx.fillStyle = g;
+    ctx.fillRect(px, py, pw, ph);
 
-    ctx.fillStyle = "#f7eef2";
-    ctx.fillRect(0, 0, W, H);
-
-    var mug =
-      opts.cor === "preta"
-        ? "#2a2a2a"
-        : opts.cor === "magica"
-          ? "#1b1b2e"
-          : "#f8f8f8";
-    var rim = opts.cor === "branca" ? "#e4e4e4" : "#111";
-    var printBg = opts.cor === "branca" ? "#ffffff" : "#333";
-
-    var bx = 105;
-    var by = 70;
-    var bw = 230;
-    var bh = 300;
-
-    ctx.strokeStyle = mug;
-    ctx.lineWidth = 30;
-    ctx.lineCap = "round";
-    ctx.beginPath();
-    ctx.arc(bx + bw + 8, by + bh * 0.48, 58, -1.1, 1.1);
-    ctx.stroke();
-    ctx.strokeStyle = "#f7eef2";
-    ctx.lineWidth = 14;
-    ctx.beginPath();
-    ctx.arc(bx + bw + 8, by + bh * 0.48, 58, -1.1, 1.1);
-    ctx.stroke();
-
-    roundRect(ctx, bx, by, bw, bh, 28);
-    ctx.fillStyle = mug;
-    ctx.fill();
-    ctx.strokeStyle = rim;
-    ctx.lineWidth = 2;
-    ctx.stroke();
-
-    roundRect(ctx, bx + 14, by + 10, bw - 28, 18, 8);
-    ctx.fillStyle = rim;
-    ctx.fill();
-
-    var px = bx + 34;
-    var py = by + 55;
-    var pw = bw - 68;
-    var ph = bh - 120;
-    roundRect(ctx, px, py, pw, ph, 10);
-    ctx.fillStyle = printBg;
-    ctx.fill();
-    ctx.save();
-    roundRect(ctx, px, py, pw, ph, 10);
-    ctx.clip();
-
-    if (userImg) {
-      var scale = Math.max(pw / userImg.width, ph / userImg.height);
-      var iw = userImg.width * scale;
-      var ih = userImg.height * scale;
-      ctx.drawImage(userImg, px + (pw - iw) / 2, py + (ph - ih) / 2, iw, ih);
-    }
-
-    if (opts.texto) {
-      ctx.fillStyle = opts.cor === "branca" ? "#9d426b" : "#ffffff";
-      ctx.font = "bold 22px Trebuchet MS, Arial, sans-serif";
-      ctx.textAlign = "center";
-      ctx.textBaseline = "middle";
-      var ty = userImg ? py + ph - 28 : py + ph / 2;
-      if (userImg) {
-        ctx.fillStyle = "rgba(0,0,0,0.35)";
-        ctx.fillRect(px, py + ph - 52, pw, 52);
-        ctx.fillStyle = "#fff";
-      }
-      ctx.fillText(String(opts.texto).slice(0, 28), px + pw / 2, ty);
-    } else if (!userImg) {
-      ctx.fillStyle = opts.cor === "branca" ? "#9d426b" : "#fff";
-      ctx.font = "bold 20px Trebuchet MS, Arial, sans-serif";
-      ctx.textAlign = "center";
-      ctx.textBaseline = "middle";
-      ctx.fillText("Sua arte aqui", px + pw / 2, py + ph / 2);
-    }
-    ctx.restore();
-
-    ctx.fillStyle = "#9d426b";
-    ctx.font = "bold 15px Trebuchet MS, Arial, sans-serif";
-    ctx.textAlign = "center";
-    ctx.fillText("Prévia ilustrativa · Personalizamos", W / 2, H - 28);
-
-    done(canvas.toDataURL("image/jpeg", 0.9));
+    var vg = ctx.createLinearGradient(px, py, px, py + ph);
+    vg.addColorStop(0, "rgba(255,255,255,0.22)");
+    vg.addColorStop(0.35, "rgba(255,255,255,0)");
+    vg.addColorStop(1, "rgba(0,0,0,0.18)");
+    ctx.fillStyle = vg;
+    ctx.fillRect(px, py, pw, ph);
   }
 
+  /** Caneca branca realista + arte envolvida no corpo. */
   function montarMockupCaneca(userImg, opts, done) {
-    carregarTplCaneca(function (tpl) {
-      if (!tpl) {
-        montarMockupCanecaDesenho(userImg, opts, done);
-        return;
-      }
-
-      var scale = 2;
-      var W = tpl.width * scale;
-      var H = tpl.height * scale;
+    prepararArteCaneca(userImg, opts || {}, 900, 900, function (art) {
+      var W = 720;
+      var H = 820;
       var canvas = document.createElement("canvas");
       canvas.width = W;
       canvas.height = H;
       var ctx = canvas.getContext("2d");
       ctx.imageSmoothingEnabled = true;
       ctx.imageSmoothingQuality = "high";
-      ctx.drawImage(tpl, 0, 0, W, H);
 
-      /*
-       * Zona principal = caneca da frente (arte em volta do corpo).
-       * Zona menor = caneca de trás (mesma arte, escala menor).
-       */
-      var zones = [
-        { x: W * 0.105, y: H * 0.22, w: W * 0.38, h: H * 0.55 },
-        { x: W * 0.545, y: H * 0.2, w: W * 0.27, h: H * 0.42 }
-      ];
+      /* fundo */
+      var bg = ctx.createLinearGradient(0, 0, W, H);
+      bg.addColorStop(0, "#f7eef2");
+      bg.addColorStop(0.55, "#ffffff");
+      bg.addColorStop(1, "#e8eef5");
+      ctx.fillStyle = bg;
+      ctx.fillRect(0, 0, W, H);
 
-      prepararArteCaneca(userImg, opts || {}, 720, 720, function (art) {
-        zones.forEach(function (z) {
-          aplicarArteNaZona(ctx, art, z);
-        });
+      /* sombra no chão */
+      ctx.fillStyle = "rgba(0,0,0,0.12)";
+      ctx.beginPath();
+      ctx.ellipse(W * 0.48, H * 0.88, 150, 22, 0, 0, Math.PI * 2);
+      ctx.fill();
 
-        ctx.fillStyle = "rgba(255,255,255,0.9)";
-        roundRect(
-          ctx,
-          W * 0.08,
-          H - 36 * (scale / 2) - 8,
-          W * 0.84,
-          28 * (scale / 2) + 10,
-          8
-        );
-        ctx.fill();
-        ctx.fillStyle = "#9d426b";
-        ctx.font =
-          "bold " +
-          Math.round(13 * scale) +
-          "px Trebuchet MS, Arial, sans-serif";
-        ctx.textAlign = "center";
-        ctx.textBaseline = "middle";
-        ctx.fillText(
-          "Prévia ilustrativa · Personalizamos",
-          W / 2,
-          H - 18 * (scale / 2) - 4
-        );
+      var bx = 175;
+      var by = 95;
+      var bw = 300;
+      var bh = 420;
 
-        done(canvas.toDataURL("image/jpeg", 0.94));
-      });
+      /* alça */
+      ctx.strokeStyle = "#f2f2f2";
+      ctx.lineWidth = 36;
+      ctx.lineCap = "round";
+      ctx.beginPath();
+      ctx.arc(bx + bw + 6, by + bh * 0.45, 68, -1.15, 1.15);
+      ctx.stroke();
+      ctx.strokeStyle = "#dedede";
+      ctx.lineWidth = 3;
+      ctx.beginPath();
+      ctx.arc(bx + bw + 6, by + bh * 0.45, 68 + 16, -1.15, 1.15);
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.arc(bx + bw + 6, by + bh * 0.45, 68 - 16, -1.15, 1.15);
+      ctx.stroke();
+      ctx.strokeStyle = "#f7eef2";
+      ctx.lineWidth = 18;
+      ctx.beginPath();
+      ctx.arc(bx + bw + 6, by + bh * 0.45, 68, -1.15, 1.15);
+      ctx.stroke();
+
+      /* corpo */
+      var bodyGrad = ctx.createLinearGradient(bx, by, bx + bw, by);
+      bodyGrad.addColorStop(0, "#e8e8e8");
+      bodyGrad.addColorStop(0.22, "#ffffff");
+      bodyGrad.addColorStop(0.55, "#fafafa");
+      bodyGrad.addColorStop(0.82, "#ffffff");
+      bodyGrad.addColorStop(1, "#e4e4e4");
+      roundRect(ctx, bx, by, bw, bh, 36);
+      ctx.fillStyle = bodyGrad;
+      ctx.fill();
+      ctx.strokeStyle = "#d8d8d8";
+      ctx.lineWidth = 2;
+      ctx.stroke();
+
+      /* boca / interior */
+      ctx.fillStyle = "#dfe7ef";
+      roundRect(ctx, bx + 18, by + 12, bw - 36, 34, 14);
+      ctx.fill();
+      ctx.fillStyle = "#c8d2dc";
+      roundRect(ctx, bx + 28, by + 18, bw - 56, 18, 9);
+      ctx.fill();
+
+      /* área de impressão (quase toda a face, em volta) */
+      var px = bx + 28;
+      var py = by + 70;
+      var pw = bw - 56;
+      var ph = bh - 130;
+
+      ctx.save();
+      roundRect(ctx, px, py, pw, ph, 18);
+      ctx.clip();
+      ctx.fillStyle = "#ffffff";
+      ctx.fillRect(px, py, pw, ph);
+      desenharArteCilindro(ctx, art, px, py, pw, ph);
+      sombrearArteCaneca(ctx, px, py, pw, ph);
+      ctx.restore();
+
+      /* brilho lateral da porcelana por cima da arte */
+      ctx.save();
+      roundRect(ctx, bx, by, bw, bh, 36);
+      ctx.clip();
+      var shine = ctx.createLinearGradient(bx, by, bx + bw * 0.45, by);
+      shine.addColorStop(0, "rgba(255,255,255,0)");
+      shine.addColorStop(0.45, "rgba(255,255,255,0.18)");
+      shine.addColorStop(1, "rgba(255,255,255,0)");
+      ctx.fillStyle = shine;
+      ctx.fillRect(bx, by, bw * 0.5, bh);
+      ctx.restore();
+
+      /* base sutil */
+      ctx.strokeStyle = "rgba(0,0,0,0.08)";
+      ctx.lineWidth = 3;
+      ctx.beginPath();
+      ctx.ellipse(bx + bw / 2, by + bh - 6, bw * 0.42, 10, 0, 0, Math.PI * 2);
+      ctx.stroke();
+
+      ctx.fillStyle = "#9d426b";
+      ctx.font = "bold 20px Trebuchet MS, Arial, sans-serif";
+      ctx.textAlign = "center";
+      ctx.fillText("Prévia ilustrativa · Personalizamos", W / 2, H - 36);
+
+      done(canvas.toDataURL("image/jpeg", 0.92));
     });
   }
 
