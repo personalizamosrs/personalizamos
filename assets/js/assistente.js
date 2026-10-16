@@ -707,48 +707,186 @@
     });
   }
 
-  function fecharCaneca() {
+  function resumoCaneca() {
     var c = respostas.caneca || {};
-    var resumo =
+    return (
       "Caneca " +
-      (c.corRotulo || "") +
+      (c.corRotulo || "Branca") +
       ", uso: " +
       (c.usoRotulo || "") +
       ", arte: " +
       (c.arteTipoRotulo || "") +
       ", qtd: " +
-      (c.qtdRotulo || "");
+      (c.qtdRotulo || "")
+    );
+  }
+
+  /** Comprime a prévia (JPEG leve) — não grava no GitHub, só envia por e-mail. */
+  function comprimirMockup(dataUrl, maxW, quality, done) {
+    if (!dataUrl) {
+      done(null);
+      return;
+    }
+    var img = new Image();
+    img.onload = function () {
+      var w = img.width;
+      var h = img.height;
+      if (w > maxW) {
+        h = Math.round((h * maxW) / w);
+        w = maxW;
+      }
+      var c = document.createElement("canvas");
+      c.width = w;
+      c.height = h;
+      c.getContext("2d").drawImage(img, 0, 0, w, h);
+      if (c.toBlob) {
+        c.toBlob(
+          function (blob) {
+            done(blob);
+          },
+          "image/jpeg",
+          quality
+        );
+      } else {
+        var url = c.toDataURL("image/jpeg", quality);
+        var bin = atob(url.split(",")[1] || "");
+        var arr = new Uint8Array(bin.length);
+        for (var i = 0; i < bin.length; i++) arr[i] = bin.charCodeAt(i);
+        done(new Blob([arr], { type: "image/jpeg" }));
+      }
+    };
+    img.onerror = function () {
+      done(null);
+    };
+    img.src = dataUrl;
+  }
+
+  function enviarLeadCaneca(whatsRaw, btnEl) {
+    var whats = (whatsRaw || "").trim();
+    var digits = whats.replace(/\D/g, "");
+    if (digits.length < 10) {
+      fala("Me informa um WhatsApp válido com DDD, por favor.");
+      return;
+    }
+    if (!window.__lgpdOk) {
+      fala(
+        "Toque em <strong>Autorizo o contato</strong> ao lado do aviso de dados seguros e envie de novo.",
+        "guia",
+        true
+      );
+      return;
+    }
+
+    fala(whats, "voce");
+    fala("Enviando sua prévia para a Luana…");
+    if (btnEl) btnEl.disabled = true;
+
+    var resumo = resumoCaneca();
+    var mockup = respostas.caneca && respostas.caneca.mockup;
+
+    comprimirMockup(mockup, 480, 0.28, function (blob) {
+      var fd = new FormData();
+      fd.append("_subject", "Lu.ia — prévia de caneca (Personalizamos)");
+      fd.append("_captcha", "false");
+      fd.append("_template", "table");
+      fd.append("origem", "https://personalizamos.com.br/ (Lu.ia)");
+      fd.append("whatsapp", whats);
+      fd.append("whatsapp_digitos", digits);
+      fd.append("resumo", resumo);
+      if (blob) {
+        fd.append("mockup", blob, "previa-caneca.jpg");
+      } else {
+        fd.append("mockup", "(prévia não anexada — peça de novo no site)");
+      }
+
+      fetch("https://formsubmit.co/ajax/jorgertj@gmail.com", {
+        method: "POST",
+        body: fd,
+        headers: { Accept: "application/json" }
+      })
+        .then(function (r) {
+          if (!r.ok) throw new Error("fail");
+          return r.json().catch(function () {
+            return {};
+          });
+        })
+        .then(function () {
+          fala(
+            "Pronto! A <strong>Luana Collatto</strong> recebeu sua prévia e o WhatsApp. Ela vai melhorar o modelo e te passar o orçamento.",
+            "guia",
+            true
+          );
+          limparOpcoes();
+          botao("Escolher outra categoria", function () {
+            fala("Escolher outra categoria", "voce");
+            perguntarObjetivo();
+          });
+          botao("Começar de novo", function () {
+            comecar();
+          });
+        })
+        .catch(function () {
+          if (btnEl) btnEl.disabled = false;
+          fala(
+            "Não consegui enviar agora. Você pode falar direto com a gente: " +
+              linkWhats(
+                "Olá! Montei uma prévia de caneca com a Lu.ia. Meu WhatsApp: " +
+                  whats +
+                  ". " +
+                  resumo
+              ),
+            "guia",
+            true
+          );
+        });
+    });
+  }
+
+  function fecharCaneca() {
     fala(
-      "Gostou da ideia? Posso te ajudar a fechar o pedido. " +
-        linkWhats(
-          "Olá! Falei com a Lu.ia sobre canecas. " +
-            resumo +
-            ". Quero orçamento."
-        ),
+      "Gostou da ideia? Se sim, informe seu WhatsApp abaixo que a <strong>Luana Collatto</strong>, minha chefe, vai melhorar este modelo e orçar o valor para você.",
       "guia",
       true
     );
     limparOpcoes();
-    botao("Pedir orçamento no WhatsApp", function () {
-      window.open(
-        "https://api.whatsapp.com/send?phone=5551985435231&text=" +
-          encodeURIComponent(
-            "Olá! Falei com a Lu.ia sobre canecas. " + resumo + ". Quero orçamento."
-          ),
-        "_blank",
-        "noopener,noreferrer"
-      );
+
+    var wrap = document.createElement("div");
+    wrap.className = "guia-wa-form";
+
+    var input = document.createElement("input");
+    input.type = "tel";
+    input.className = "guia-wa-input";
+    input.placeholder = "Seu WhatsApp (DDD + número)";
+    input.setAttribute("inputmode", "tel");
+    input.setAttribute("autocomplete", "tel");
+    input.setAttribute("aria-label", "Seu WhatsApp");
+
+    var btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = "guia-wa-enviar";
+    btn.textContent = "Enviar";
+
+    wrap.appendChild(input);
+    wrap.appendChild(btn);
+    opcoes.appendChild(wrap);
+
+    btn.addEventListener("click", function () {
+      enviarLeadCaneca(input.value, btn);
     });
-    botao("Montar outra prévia", function () {
-      fala("Montar outra prévia", "voce");
-      fluxoCaneca();
+    input.addEventListener("keydown", function (ev) {
+      if (ev.key === "Enter") {
+        ev.preventDefault();
+        enviarLeadCaneca(input.value, btn);
+      }
+    });
+
+    botao("Refazer modelo", function () {
+      fala("Refazer modelo", "voce");
+      pedirUploadCaneca();
     });
     botao("Escolher outra categoria", function () {
       fala("Escolher outra categoria", "voce");
       perguntarObjetivo();
-    });
-    botao("Começar de novo", function () {
-      comecar();
     });
   }
 
@@ -869,6 +1007,15 @@
     });
     video.addEventListener("ended", function () {
       finalizarVideo();
+    });
+  }
+
+  var lgpdBtn = document.getElementById("lgpd-autorizo");
+  if (lgpdBtn) {
+    lgpdBtn.addEventListener("click", function () {
+      window.__lgpdOk = true;
+      lgpdBtn.classList.add("ok");
+      lgpdBtn.textContent = "Autorizado ✓";
     });
   }
 

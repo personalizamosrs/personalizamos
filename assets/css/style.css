@@ -1372,20 +1372,100 @@ a.whatsapp-float img {
 .guia-opcoes input[type="file"] {
 	display: none;
 }
+.guia-wa-form {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0.45rem;
+	width: 100%;
+	align-items: center;
+}
+.guia-wa-input {
+	flex: 1 1 160px;
+	min-width: 0;
+	border: 1px solid #9d426b;
+	border-radius: 999px;
+	padding: 0.65rem 1rem;
+	font-family: inherit;
+	font-size: 16px;
+	color: #5d5d5d;
+	outline: 0;
+}
+.guia-wa-input:focus {
+	box-shadow: 0 0 0 2px rgba(157, 66, 107, 0.25);
+}
+.guia-wa-enviar {
+	border: 0 !important;
+	background: #25d366 !important;
+	color: #fff !important;
+	border-radius: 999px;
+	padding: 0.7rem 1.15rem;
+	cursor: pointer;
+	font-weight: 700;
+	font-family: inherit;
+	font-size: 17px;
+}
+.guia-wa-enviar:hover,
+.guia-wa-enviar:focus {
+	background: #1ebe57 !important;
+	color: #fff !important;
+}
+.guia-wa-enviar:disabled {
+	opacity: 0.55;
+	cursor: wait;
+}
 .guia .lgpd {
 	margin: 0;
-	padding: 0.85rem 1rem 1rem;
-	text-align: center;
+	padding: 0.75rem 0.85rem 0.9rem;
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	justify-content: center;
+	gap: 0.55rem 0.75rem;
+	text-align: left;
 	font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
-	font-size: 15px;
+	font-size: 14px;
 	font-weight: 700;
-	line-height: 1.45;
+	line-height: 1.4;
 	color: #9d426b;
 	background: #f7eef2;
 	border-top: 2px solid #9d426b;
 }
+.guia .lgpd p {
+	margin: 0;
+	flex: 1 1 180px;
+	font-size: inherit;
+	font-weight: inherit;
+	color: inherit;
+	line-height: inherit;
+	text-align: left;
+}
 .guia .lgpd br {
 	display: block;
+}
+.guia .lgpd-btn {
+	flex: 0 0 auto;
+	border: 1px solid #9d426b;
+	background: #fff;
+	color: #9d426b;
+	border-radius: 999px;
+	padding: 0.45rem 0.85rem;
+	font-family: inherit;
+	font-size: 13px;
+	font-weight: 700;
+	cursor: pointer;
+	line-height: 1.2;
+	white-space: nowrap;
+}
+.guia .lgpd-btn:hover,
+.guia .lgpd-btn:focus {
+	background: #9d426b;
+	color: #fff;
+	outline: 0;
+}
+.guia .lgpd-btn.ok {
+	background: #25d366;
+	border-color: #25d366;
+	color: #fff;
 }
 @media (max-width: 767px) {
 	.guia {
@@ -1421,7 +1501,14 @@ a.whatsapp-float img {
 		font-size: 17px;
 	}
 	.guia .lgpd {
-		font-size: 14px;
-		padding: 0.75rem 0.85rem 0.9rem;
+		font-size: 13px;
+		padding: 0.65rem 0.7rem 0.75rem;
+	}
+	.guia .lgpd-btn {
+		font-size: 12px;
+		padding: 0.4rem 0.7rem;
+	}
+	.guia-wa-input {
+		font-size: 15px;
 	}
 }
