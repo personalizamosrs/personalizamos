@@ -1459,6 +1459,16 @@ a.whatsapp-float img {
 	opacity: 0.55;
 	cursor: wait;
 }
+.guia-wa-enviar.guia-wa-enviando {
+	opacity: 0.85;
+	cursor: wait;
+	background: #1a9f4c !important;
+}
+.guia-wa-enviar.guia-wa-enviado {
+	opacity: 1;
+	cursor: default;
+	background: #128c7e !important;
+}
 .guia-wa-acoes {
 	display: flex;
 	flex-wrap: wrap;

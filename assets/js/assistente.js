@@ -804,7 +804,11 @@
     window.__lgpdOk = true;
     fala(whats, "voce");
     fala("Enviando sua prévia para a Luana…");
-    if (btnEl) btnEl.disabled = true;
+    if (btnEl) {
+      btnEl.disabled = true;
+      btnEl.textContent = "Carregando modelo…";
+      btnEl.classList.add("guia-wa-enviando");
+    }
 
     var resumo = resumoCaneca();
     var mockup = respostas.caneca && respostas.caneca.mockup;
@@ -847,22 +851,33 @@
         campos,
         arquivo,
         function () {
-          fala(
-            "Pronto! A <strong>Luana Collatto</strong> recebeu sua prévia e o WhatsApp. Ela vai melhorar o modelo e te passar o orçamento.",
-            "guia",
-            true
-          );
-          limparOpcoes();
-          botao("Escolher outra categoria", function () {
-            fala("Escolher outra categoria", "voce");
-            perguntarObjetivo();
-          });
-          botao("Começar de novo", function () {
-            comecar();
-          });
+          if (btnEl) {
+            btnEl.textContent = "Enviado";
+            btnEl.classList.remove("guia-wa-enviando");
+            btnEl.classList.add("guia-wa-enviado");
+          }
+          window.setTimeout(function () {
+            fala(
+              "Pronto! A <strong>Luana Collatto</strong> recebeu sua prévia e o WhatsApp. Ela vai melhorar o modelo e te passar o orçamento.",
+              "guia",
+              true
+            );
+            limparOpcoes();
+            botao("Escolher outra categoria", function () {
+              fala("Escolher outra categoria", "voce");
+              perguntarObjetivo();
+            });
+            botao("Começar de novo", function () {
+              comecar();
+            });
+          }, 700);
         },
         function () {
-          if (btnEl) btnEl.disabled = false;
+          if (btnEl) {
+            btnEl.disabled = false;
+            btnEl.textContent = "Autorizo o contato, enviar";
+            btnEl.classList.remove("guia-wa-enviando", "guia-wa-enviado");
+          }
           fala(
             "Não consegui enviar agora. Você pode falar direto com a gente: " +
               linkWhats(
