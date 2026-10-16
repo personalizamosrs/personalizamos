@@ -257,7 +257,8 @@ ul.navbar-nav li.active .dropdown-menu > .active > a:focus { background: #9d426b
 /***** Presentation *****/
 
 .presentation-container {
-	margin-top: 10px;
+	margin-top: 6px;
+	margin-bottom: 4px;
 }
 
 .presentation-container h1 {
@@ -990,20 +991,106 @@ a.whatsapp-float img {
 	}
 }
 
-/* Contact bar (was H1 — kept as p for SEO) */
-.presentation-container p.site-contact-bar {
-	margin: 0;
-	padding: 0;
+/* Contact bar — WhatsApp + Instagram */
+.site-contact-bar {
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: center;
+	align-items: center;
+	gap: 10px;
+	margin: 0 auto;
+	padding: 6px 8px 10px;
 	font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
-	font-size: 16px;
-	color: #5d5d5d;
-	font-weight: bold;
 	font-style: normal;
+	text-align: center;
 }
-.presentation-container p.site-contact-bar a {
+.contact-chip {
+	display: inline-flex;
+	align-items: center;
+	gap: 10px;
+	padding: 9px 16px;
+	border-radius: 999px;
+	text-decoration: none !important;
+	color: #fff !important;
 	font-style: normal;
-	font-weight: bold;
-	color: inherit;
+	font-weight: 700;
+	line-height: 1.15;
+	box-shadow: 0 4px 14px rgba(0, 0, 0, 0.12);
+	transition: transform 0.15s ease, box-shadow 0.15s ease;
+	max-width: 100%;
+}
+.contact-chip:hover,
+.contact-chip:focus {
+	transform: translateY(-1px);
+	box-shadow: 0 6px 18px rgba(0, 0, 0, 0.16);
+	color: #fff !important;
+	text-decoration: none !important;
+	outline: 0;
+}
+.contact-chip img {
+	width: 22px;
+	height: 22px;
+	border-radius: 50%;
+	object-fit: cover;
+	flex-shrink: 0;
+	display: block;
+	border: 0;
+}
+.contact-chip-text {
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+	text-align: left;
+	gap: 1px;
+}
+.contact-chip-text strong {
+	font-size: 11px;
+	font-weight: 700;
+	letter-spacing: 0.04em;
+	text-transform: uppercase;
+	opacity: 0.92;
+}
+.contact-chip-text em {
+	font-style: normal;
+	font-size: 14px;
+	font-weight: 700;
+}
+.contact-chip-wa {
+	background: #25d366;
+}
+.contact-chip-wa:hover,
+.contact-chip-wa:focus {
+	background: #1ebe57;
+}
+.contact-chip-ig {
+	background: linear-gradient(135deg, #f58529 0%, #dd2a7b 45%, #8134af 100%);
+}
+@media (max-width: 480px) {
+	.site-contact-bar {
+		gap: 8px;
+		padding: 4px 4px 8px;
+	}
+	.contact-chip {
+		flex: 1 1 calc(50% - 8px);
+		justify-content: center;
+		padding: 10px 10px;
+		gap: 8px;
+		min-width: 0;
+	}
+	.contact-chip-text {
+		align-items: flex-start;
+		min-width: 0;
+	}
+	.contact-chip-text strong {
+		font-size: 10px;
+	}
+	.contact-chip-text em {
+		font-size: 12px;
+		white-space: nowrap;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		max-width: 110px;
+	}
 }
 
 
