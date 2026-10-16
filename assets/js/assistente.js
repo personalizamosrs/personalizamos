@@ -680,7 +680,8 @@
     var resumo = resumoCaneca();
     var mockup = respostas.caneca && respostas.caneca.mockup;
 
-    comprimirMockup(mockup, 480, 0.28, function (blob) {
+    /* JPEG bem leve (~400px) para anexo no e-mail sem pesar */
+    comprimirMockup(mockup, 400, 0.25, function (blob) {
       var fd = new FormData();
       fd.append("_subject", "Lu.ia — prévia de caneca (Personalizamos)");
       fd.append("_captcha", "false");
@@ -690,14 +691,24 @@
       fd.append("whatsapp_digitos", digits);
       fd.append("resumo", resumo);
       if (blob) {
-        fd.append("mockup", blob, "previa-caneca.jpg");
+        /* FormSubmit reconhece melhor o nome "attachment" */
+        fd.append("attachment", blob, "previa-caneca.jpg");
+        fd.append(
+          "aviso_anexo",
+          "A prévia da caneca vai em anexo (previa-caneca.jpg)."
+        );
       } else {
-        fd.append("mockup", "(prévia não anexada — peça de novo no site)");
+        fd.append(
+          "aviso_anexo",
+          "Prévia não gerada — peça ao cliente para reenviar no site."
+        );
       }
 
-      /* destinatário ofuscado — não exibir no site */
-      var dest = atob("am9yZ2VydGpAZ21haWwuY29t");
-      fetch("https://formsubmit.co/ajax/" + dest, {
+      /*
+       * Endpoint anônimo do FormSubmit (não expõe e-mail no site).
+       * Ativar uma vez pelo botão ACTIVATE FORM no e-mail do FormSubmit.
+       */
+      fetch("https://formsubmit.co/ajax/bd6dd2e7219cafb28cbd932ad40a2b2a", {
         method: "POST",
         body: fd,
         headers: { Accept: "application/json" }
