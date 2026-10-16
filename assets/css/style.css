@@ -1361,6 +1361,21 @@ a.whatsapp-float img {
 .guia-opcoes input[type="file"] {
 	display: none;
 }
+.guia .lgpd {
+	margin: 0;
+	padding: 0.85rem 1rem 1rem;
+	text-align: center;
+	font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+	font-size: 15px;
+	font-weight: 700;
+	line-height: 1.45;
+	color: #9d426b;
+	background: #f7eef2;
+	border-top: 2px solid #9d426b;
+}
+.guia .lgpd br {
+	display: block;
+}
 @media (max-width: 767px) {
 	.guia {
 		max-width: 100%;
@@ -1393,5 +1408,9 @@ a.whatsapp-float img {
 	.guia-opcoes button,
 	.guia-opcoes label.guia-upload {
 		font-size: 17px;
+	}
+	.guia .lgpd {
+		font-size: 14px;
+		padding: 0.75rem 0.85rem 0.9rem;
 	}
 }
