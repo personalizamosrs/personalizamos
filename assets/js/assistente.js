@@ -146,10 +146,11 @@
     opcoes.innerHTML = "";
   }
 
-  function botao(rotulo, onClick) {
+  function botao(rotulo, onClick, destaque) {
     var b = document.createElement("button");
     b.type = "button";
     b.textContent = rotulo;
+    if (destaque) b.className = "guia-destaque";
     b.addEventListener("click", onClick);
     opcoes.appendChild(b);
     return b;
@@ -196,11 +197,15 @@
     passo = "objetivo";
     limparOpcoes();
     fala("Me conta: o que você precisa agora?");
-    botao("Canecas personalizadas", function () {
-      respostas.cat = "empresa";
-      fala("Canecas personalizadas", "voce");
-      fluxoCaneca();
-    });
+    botao(
+      "Canecas personalizadas",
+      function () {
+        respostas.cat = "empresa";
+        fala("Canecas personalizadas", "voce");
+        fluxoCaneca();
+      },
+      true
+    );
     Object.keys(catalogo).forEach(function (key) {
       botao(catalogo[key].rotulo, function () {
         respostas.cat = key;

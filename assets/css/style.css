@@ -1268,15 +1268,18 @@ a.whatsapp-float img {
 	display: flex;
 	flex-direction: column;
 	gap: 0.45rem;
-	height: 340px;
+	height: auto;
+	min-height: 0;
+	max-height: 260px;
 	overflow: auto;
-	padding: 0.55rem 0.5rem 0.65rem;
+	padding: 0.45rem 0.5rem 0.5rem;
 	background: #f7eef2;
 	border-radius: 12px;
 	-webkit-overflow-scrolling: touch;
 }
 .guia.compacta .guia-msgs {
-	height: 400px;
+	height: auto;
+	max-height: 300px;
 }
 .guia-scroll-down {
 	position: absolute;
@@ -1377,7 +1380,7 @@ a.whatsapp-float img {
 	display: flex;
 	flex-wrap: wrap;
 	gap: 0.55rem;
-	margin-top: 0.8rem;
+	margin-top: 0.55rem;
 }
 .guia-opcoes button,
 .guia-opcoes label.guia-upload {
@@ -1393,6 +1396,13 @@ a.whatsapp-float img {
 	line-height: 1.3;
 	display: inline-flex;
 	align-items: center;
+}
+.guia-opcoes button.guia-destaque {
+	font-weight: 800;
+	color: #9d426b;
+	border-width: 2px;
+	background: #f7eef2;
+	box-shadow: 0 2px 8px rgba(157, 66, 107, 0.18);
 }
 .guia-opcoes button:hover,
 .guia-opcoes button:focus,
@@ -1492,10 +1502,12 @@ a.whatsapp-float img {
 		max-height: 160px;
 	}
 	.guia-msgs {
-		height: 300px;
+		height: auto;
+		max-height: 240px;
 	}
 	.guia.compacta .guia-msgs {
-		height: 380px;
+		height: auto;
+		max-height: 280px;
 	}
 	.fala {
 		font-size: 22px;
