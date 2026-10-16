@@ -698,7 +698,7 @@
     passo = "caneca";
     limparOpcoes();
     fala(
-      'Ótimo! Vamos montar sua <strong>caneca</strong> com foto ou logo. <a href="personalizado_canecas.html">Ver página de canecas</a>',
+      "Ótimo! Vamos montar sua <strong>caneca</strong> com foto ou logo.",
       "guia",
       true
     );
