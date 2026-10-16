@@ -4,6 +4,7 @@
   var opcoes = document.querySelector("#guia-opcoes");
   var painel = document.querySelector("#guia");
   var video = document.querySelector("#guia-video");
+  var scrollDownBtn = document.querySelector("#guia-scroll-down");
   if (!msgs || !opcoes || !painel) return;
 
   var WA =
@@ -106,6 +107,21 @@
   var respostas = {};
   var passo = "inicio";
 
+  function atualizarScrollDown() {
+    if (!scrollDownBtn) return;
+    var gap = msgs.scrollHeight - msgs.scrollTop - msgs.clientHeight;
+    if (gap > 28) {
+      scrollDownBtn.hidden = false;
+    } else {
+      scrollDownBtn.hidden = true;
+    }
+  }
+
+  function irParaFimChat() {
+    msgs.scrollTop = msgs.scrollHeight;
+    atualizarScrollDown();
+  }
+
   function fala(texto, autor, html) {
     var p = document.createElement("p");
     p.className = "fala fala-" + (autor === "voce" ? "voce" : "guia");
@@ -123,7 +139,7 @@
       p.appendChild(document.createTextNode(texto));
     }
     msgs.appendChild(p);
-    msgs.scrollTop = msgs.scrollHeight;
+    irParaFimChat();
   }
 
   function limparOpcoes() {
@@ -324,7 +340,14 @@
       "Prévia ilustrativa — a arte final é ajustada na produção.";
     p.appendChild(nota);
     msgs.appendChild(p);
-    msgs.scrollTop = msgs.scrollHeight;
+    if (img.complete) {
+      irParaFimChat();
+    } else {
+      img.onload = function () {
+        irParaFimChat();
+      };
+      irParaFimChat();
+    }
   }
 
   function roundRect(ctx, x, y, w, h, r) {
@@ -931,6 +954,13 @@
       finalizarVideo();
     });
   }
+
+  if (scrollDownBtn) {
+    scrollDownBtn.addEventListener("click", function () {
+      irParaFimChat();
+    });
+  }
+  msgs.addEventListener("scroll", atualizarScrollDown, { passive: true });
 
   comecar();
 })();

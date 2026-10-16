@@ -1261,6 +1261,9 @@ a.whatsapp-float img {
 	padding: 0.85rem 0.9rem 1rem;
 	border-top: 1px solid #e8d5de;
 }
+.guia-msgs-wrap {
+	position: relative;
+}
 .guia-msgs {
 	display: flex;
 	flex-direction: column;
@@ -1274,6 +1277,35 @@ a.whatsapp-float img {
 }
 .guia.compacta .guia-msgs {
 	height: 400px;
+}
+.guia-scroll-down {
+	position: absolute;
+	right: 10px;
+	bottom: 10px;
+	z-index: 3;
+	width: 36px;
+	height: 36px;
+	border: 0;
+	border-radius: 50%;
+	background: #fff;
+	color: #54656f;
+	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.18);
+	cursor: pointer;
+	font-size: 18px;
+	line-height: 1;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: 0;
+}
+.guia-scroll-down[hidden] {
+	display: none !important;
+}
+.guia-scroll-down:hover,
+.guia-scroll-down:focus {
+	background: #f0f2f5;
+	outline: 0;
+	color: #9d426b;
 }
 .fala {
 	margin: 0;
@@ -1324,8 +1356,8 @@ a.whatsapp-float img {
 	border: 1px solid #c5e8b0;
 }
 .fala-mockup {
-	max-width: 100%;
-	padding: 0.5rem;
+	max-width: 72%;
+	padding: 0.35rem;
 	background: #fff;
 	border: 1px solid #e8d5de;
 	border-radius: 0 12px 12px 12px;
@@ -1333,10 +1365,12 @@ a.whatsapp-float img {
 }
 .fala-mockup img {
 	display: block;
-	width: 100%;
-	max-width: 280px;
+	width: auto;
+	max-width: 150px;
+	max-height: 130px;
 	height: auto;
-	border-radius: 12px;
+	object-fit: contain;
+	border-radius: 10px;
 	margin: 0 auto;
 }
 .guia-opcoes {
