@@ -1267,7 +1267,9 @@ a.whatsapp-float img {
 	gap: 0.45rem;
 	height: 340px;
 	overflow: auto;
-	padding: 0.35rem 0.15rem 0.5rem;
+	padding: 0.55rem 0.5rem 0.65rem;
+	background: #f7eef2;
+	border-radius: 12px;
 	-webkit-overflow-scrolling: touch;
 }
 .guia.compacta .guia-msgs {
