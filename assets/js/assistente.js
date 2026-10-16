@@ -700,22 +700,59 @@
     return { texto: data + " " + hora, arquivo: arquivo };
   }
 
-  /* Sem /ajax/ — só o POST clássico entrega anexo. Confirmação via _next. */
+  /* POST clássico (sem /ajax/) — é o que entrega anexo no FormSubmit. */
   var FORMSUBMIT_POST =
     "https://formsubmit.co/bd6dd2e7219cafb28cbd932ad40a2b2a";
-  var FORMSUBMIT_NEXT = "https://personalizamos.com.br/assets/envio-ok.html";
+
+  /** Espelho da prévia (link) — se o anexo falhar, a Luana ainda abre a imagem. */
+  function espelharPrevia(arquivo, done) {
+    if (!arquivo) {
+      done(null);
+      return;
+    }
+    var fd = new FormData();
+    fd.append("reqtype", "fileupload");
+    fd.append(
+      "fileToUpload",
+      arquivo,
+      arquivo.name || "previa-caneca.jpg"
+    );
+    var ctrl = window.AbortController ? new AbortController() : null;
+    var timer = window.setTimeout(function () {
+      if (ctrl) ctrl.abort();
+      done(null);
+    }, 12000);
+    fetch("https://catbox.moe/user/api.php", {
+      method: "POST",
+      body: fd,
+      signal: ctrl ? ctrl.signal : undefined
+    })
+      .then(function (r) {
+        return r.text();
+      })
+      .then(function (txt) {
+        window.clearTimeout(timer);
+        var u = (txt || "").trim();
+        done(u.indexOf("https://") === 0 ? u : null);
+      })
+      .catch(function () {
+        window.clearTimeout(timer);
+        done(null);
+      });
+  }
 
   /**
-   * Multipart clássico em iframe oculto (com anexo).
-   * FormSubmit redireciona para envio-ok.html → aí confirmamos sucesso.
+   * Multipart em iframe (anexo) + campos.
+   * Não usa display:none no form (quebra o file input).
+   * Sucesso ~4s após submit (FormSubmit é cross-origin; _next no iframe costuma falhar).
    */
-  function enviarFormularioCaneca(campos, arquivo, done, fail) {
+  function postarFormSubmitIframe(campos, arquivo, done, fail) {
     var iframe = document.createElement("iframe");
     var nomeFrame = "guia-envio-" + Date.now();
     iframe.name = nomeFrame;
     iframe.setAttribute("aria-hidden", "true");
     iframe.style.cssText =
-      "position:absolute;left:-9999px;width:1px;height:1px;opacity:0;border:0";
+      "position:fixed;left:0;top:0;width:1px;height:1px;opacity:0.01;pointer-events:none;border:0";
 
     var form = document.createElement("form");
     form.method = "POST";
@@ -725,7 +762,9 @@
     form.encoding = "multipart/form-data";
     form.target = nomeFrame;
     form.acceptCharset = "UTF-8";
-    form.style.display = "none";
+    /* fora da tela, mas SEM display:none — senão o anexo não vai */
+    form.style.cssText =
+      "position:fixed;left:0;top:0;width:1px;height:1px;opacity:0.01;overflow:hidden;margin:0;padding:0;border:0";
 
     var todos = {};
     Object.keys(campos).forEach(function (k) {
@@ -733,7 +772,6 @@
     });
     todos._url = "https://personalizamos.com.br/";
     todos._captcha = "false";
-    todos._next = FORMSUBMIT_NEXT;
 
     Object.keys(todos).forEach(function (chave) {
       var input = document.createElement("input");
@@ -749,10 +787,11 @@
         fileInput.type = "file";
         fileInput.name = "attachment";
         fileInput.accept = "image/jpeg,image/png,image/*";
+        fileInput.style.cssText = "position:absolute;width:1px;height:1px;opacity:0.01";
         var transferencia = new DataTransfer();
         transferencia.items.add(arquivo);
         fileInput.files = transferencia.files;
-        if (!fileInput.files || fileInput.files.length < 1) {
+        if (!fileInput.files || fileInput.files.length < 1 || fileInput.files[0].size < 50) {
           fail();
           return;
         }
@@ -764,15 +803,12 @@
     }
 
     var acabou = false;
-    var enviou = false;
-
     function limparDom() {
       window.setTimeout(function () {
         if (form.parentNode) form.parentNode.removeChild(form);
         if (iframe.parentNode) iframe.parentNode.removeChild(iframe);
-      }, 2000);
+      }, 4000);
     }
-
     function finalizar(ok) {
       if (acabou) return;
       acabou = true;
@@ -781,48 +817,38 @@
       else fail();
     }
 
-    function chegouOk() {
-      try {
-        var href = iframe.contentWindow.location.href || "";
-        return href.indexOf("envio-ok") !== -1;
-      } catch (e) {
-        return false;
-      }
-    }
+    document.body.appendChild(iframe);
+    document.body.appendChild(form);
 
-    function disparar() {
-      if (enviou || acabou) return;
-      enviou = true;
+    window.setTimeout(function () {
       try {
         form.submit();
+        /* FormSubmit processa em ~1–2s; não dá para ler a resposta no iframe. */
+        window.setTimeout(function () {
+          finalizar(true);
+        }, 4500);
       } catch (erro) {
         finalizar(false);
       }
-    }
+    }, 200);
+  }
 
-    iframe.addEventListener("load", function () {
-      if (!enviou) {
-        disparar();
-        return;
+  function enviarFormularioCaneca(campos, arquivo, done, fail) {
+    espelharPrevia(arquivo, function (link) {
+      if (link) {
+        campos.link_previa = link;
+        campos.obs_imagem =
+          "Se o anexo não aparecer, abra a prévia neste link: " + link;
       }
-      if (chegouOk()) {
-        finalizar(true);
-        return;
-      }
-      /* Ainda no FormSubmit (cross-origin) — espera o _next */
+      postarFormSubmitIframe(campos, arquivo, done, fail);
     });
-
-    document.body.appendChild(iframe);
-    document.body.appendChild(form);
-    window.setTimeout(disparar, 300);
-    window.setTimeout(function () {
-      if (acabou) return;
-      if (chegouOk()) finalizar(true);
-      else finalizar(false);
-    }, 20000);
   }
 
   function enviarLeadCaneca(whatsRaw, btnEl) {
+    var nomePessoa = (
+      (respostas.caneca && respostas.caneca.nome) ||
+      ""
+    ).trim();
     var whats = (whatsRaw || "").trim();
     var digits = whats.replace(/\D/g, "");
     if (digits.length < 10) {
@@ -844,12 +870,18 @@
     var quando = carimboEnvio();
     /* Nome do JPG: telefone_data_hora.jpg */
     var nomeArquivo = digits + "_" + quando.arquivo + ".jpg";
+    var assunto =
+      (nomePessoa ? nomePessoa + " — " : "") +
+      "WhatsApp " +
+      digits +
+      " — prévia caneca Lu.ia — " +
+      quando.texto;
 
     comprimirMockup(mockup, 900, 0.82, function (blob) {
       var campos = {
-        _subject:
-          "WhatsApp " + digits + " — prévia caneca Lu.ia — " + quando.texto,
+        _subject: assunto,
         origem: "https://personalizamos.com.br/ (Lu.ia)",
+        nome: nomePessoa || "(não informado)",
         whatsapp: digits,
         telefone: digits,
         whatsapp_digitado: whats,
@@ -886,7 +918,9 @@
           }
           window.setTimeout(function () {
             fala(
-              "Pronto! A <strong>Luana Collatto</strong> recebeu sua prévia e o WhatsApp. Ela vai melhorar o modelo e te passar o orçamento.",
+              "Pronto! A <strong>Luana Collatto</strong> recebeu sua prévia" +
+                (nomePessoa ? ", o nome de <strong>" + nomePessoa + "</strong>" : "") +
+                " e o WhatsApp. Ela vai melhorar o modelo e te passar o orçamento.",
               "guia",
               true
             );
@@ -909,7 +943,9 @@
           fala(
             "Não consegui enviar agora. Você pode falar direto com a gente: " +
               linkWhats(
-                "Olá! Montei uma prévia de caneca com a Lu.ia. Meu WhatsApp: " +
+                "Olá! Montei uma prévia de caneca com a Lu.ia. Nome: " +
+                  (nomePessoa || "") +
+                  ". Meu WhatsApp: " +
                   whats +
                   ". " +
                   resumo
@@ -922,9 +958,33 @@
     });
   }
 
-  function fecharCaneca() {
+  function montarAcoesCanecaExtras() {
+    var acoes = document.createElement("div");
+    acoes.className = "guia-wa-acoes";
+    opcoes.appendChild(acoes);
+
+    function botaoAcao(rotulo, onClick) {
+      var b = document.createElement("button");
+      b.type = "button";
+      b.textContent = rotulo;
+      b.addEventListener("click", onClick);
+      acoes.appendChild(b);
+      return b;
+    }
+
+    botaoAcao("Refazer modelo", function () {
+      fala("Refazer modelo", "voce");
+      pedirUploadCaneca();
+    });
+    botaoAcao("Escolher outra categoria", function () {
+      fala("Escolher outra categoria", "voce");
+      perguntarObjetivo();
+    });
+  }
+
+  function pedirWhatsAppCaneca() {
     fala(
-      "Gostou da ideia? Se sim, informe seu WhatsApp abaixo que a <strong>Luana Collatto</strong>, minha chefe, vai melhorar este modelo e orçar o valor para você.",
+      "Agora informe seu <strong>WhatsApp</strong> com DDD. A <strong>Luana Collatto</strong> vai melhorar este modelo e orçar o valor para você.",
       "guia",
       true
     );
@@ -949,19 +1009,7 @@
     bloco.appendChild(input);
     bloco.appendChild(btn);
     opcoes.appendChild(bloco);
-
-    var acoes = document.createElement("div");
-    acoes.className = "guia-wa-acoes";
-    opcoes.appendChild(acoes);
-
-    function botaoAcao(rotulo, onClick) {
-      var b = document.createElement("button");
-      b.type = "button";
-      b.textContent = rotulo;
-      b.addEventListener("click", onClick);
-      acoes.appendChild(b);
-      return b;
-    }
+    montarAcoesCanecaExtras();
 
     btn.addEventListener("click", function () {
       enviarLeadCaneca(input.value, btn);
@@ -972,15 +1020,66 @@
         enviarLeadCaneca(input.value, btn);
       }
     });
+    window.setTimeout(function () {
+      try {
+        input.focus();
+      } catch (e) {}
+    }, 50);
+  }
 
-    botaoAcao("Refazer modelo", function () {
-      fala("Refazer modelo", "voce");
-      pedirUploadCaneca();
+  function fecharCaneca() {
+    fala(
+      "Gostou da ideia? Para a Luana te atender, me diz seu <strong>nome</strong>.",
+      "guia",
+      true
+    );
+    limparOpcoes();
+
+    var bloco = document.createElement("div");
+    bloco.className = "guia-wa-bloco";
+
+    var input = document.createElement("input");
+    input.type = "text";
+    input.className = "guia-wa-input";
+    input.placeholder = "Seu nome";
+    input.setAttribute("autocomplete", "name");
+    input.setAttribute("aria-label", "Seu nome");
+    input.maxLength = 60;
+
+    var btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = "guia-wa-enviar";
+    btn.textContent = "Continuar";
+
+    bloco.appendChild(input);
+    bloco.appendChild(btn);
+    opcoes.appendChild(bloco);
+    montarAcoesCanecaExtras();
+
+    function confirmarNome() {
+      var nome = (input.value || "").trim();
+      if (nome.length < 2) {
+        fala("Me conta seu nome, por favor (pelo menos 2 letras).");
+        return;
+      }
+      if (!respostas.caneca) respostas.caneca = {};
+      respostas.caneca.nome = nome.slice(0, 60);
+      fala(respostas.caneca.nome, "voce");
+      pedirWhatsAppCaneca();
+    }
+
+    btn.addEventListener("click", confirmarNome);
+    input.addEventListener("keydown", function (ev) {
+      if (ev.key === "Enter") {
+        ev.preventDefault();
+        confirmarNome();
+      }
     });
-    botaoAcao("Escolher outra categoria", function () {
-      fala("Escolher outra categoria", "voce");
-      perguntarObjetivo();
-    });
+    window.setTimeout(function () {
+      try {
+        input.focus();
+      } catch (e) {}
+    }, 50);
   }
 
   function fluxoCaneca() {
