@@ -1203,31 +1203,71 @@ a.whatsapp-float img {
 	padding: 0 2px;
 }
 
-/* Assistente Lu.ia (home — substitui o carrossel) */
+/* Assistente Lu.ia — layout estilo WhatsApp */
 .guia-home-wrap {
 	padding-bottom: 10px;
 }
-.guia {
+.guia.guia-wa {
 	width: 100%;
-	max-width: 520px;
+	max-width: 480px;
 	margin: 0 auto;
-	background: #fff;
-	border: 1px solid #e8d5de;
-	border-radius: 22px;
+	background: #efeae2;
+	border: 0;
+	border-radius: 12px;
 	overflow: hidden;
-	box-shadow: 0 18px 40px rgba(157, 66, 107, 0.16);
-	font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+	box-shadow: 0 8px 28px rgba(0, 0, 0, 0.18);
+	font-family: "Segoe UI", "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+.guia-wa-topo {
+	display: flex;
+	align-items: center;
+	gap: 0.7rem;
+	padding: 0.55rem 0.85rem;
+	background: #008069;
+	color: #fff;
+	text-align: left;
+}
+.guia-wa-avatar {
+	flex: 0 0 40px;
+	width: 40px;
+	height: 40px;
+	border-radius: 50%;
+	background: #dfe5e7;
+	color: #54656f;
+	font-size: 14px;
+	font-weight: 700;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	line-height: 1;
+}
+.guia-wa-topo-txt {
+	min-width: 0;
+	line-height: 1.2;
+}
+.guia-wa-topo-txt strong {
+	display: block;
+	font-size: 16px;
+	font-weight: 600;
+	color: #fff;
+}
+.guia-wa-topo-txt em {
+	display: block;
+	margin-top: 2px;
+	font-size: 12.5px;
+	font-style: normal;
+	color: rgba(255, 255, 255, 0.85);
 }
 .guia-fotos {
 	display: flex;
 	justify-content: center;
-	padding: 0.55rem 0.55rem 0;
-	background: #fff;
+	padding: 0;
+	background: #efeae2;
+	border-bottom: 0;
 }
 .guia .retrato {
-	width: min(320px, 100%);
+	width: 100%;
 	text-align: center;
-	color: #5d5d5d;
 	line-height: 0;
 }
 .guia .retrato video {
@@ -1237,29 +1277,20 @@ a.whatsapp-float img {
 	aspect-ratio: 16 / 9;
 	object-fit: cover;
 	object-position: center 18%;
-	border-radius: 16px;
-	background: #fff;
+	border-radius: 0;
+	background: #111b21;
 	display: block;
 	pointer-events: none;
 }
 .guia.compacta .retrato video {
 	aspect-ratio: 16 / 9;
-	max-height: 180px;
+	max-height: 160px;
 	object-position: center 12%;
 }
-.guia .retrato span {
-	display: block;
-	margin: 0.55rem 0 0.35rem;
-	font-size: 22px;
-	font-weight: 700;
-	letter-spacing: -0.02em;
-	color: #9d426b;
-	text-transform: none;
-	line-height: 1.2;
-}
 .guia-chat {
-	padding: 0.85rem 0.9rem 1rem;
-	border-top: 1px solid #e8d5de;
+	padding: 0;
+	border-top: 0;
+	background: #efeae2;
 }
 .guia-msgs-wrap {
 	position: relative;
@@ -1267,35 +1298,37 @@ a.whatsapp-float img {
 .guia-msgs {
 	display: flex;
 	flex-direction: column;
-	gap: 0.45rem;
+	gap: 0.2rem;
 	height: auto;
-	min-height: 110px;
-	max-height: 280px;
+	min-height: 140px;
+	max-height: 340px;
 	overflow: auto;
-	padding: 0.55rem 0.5rem 0.7rem;
-	background: #f7eef2;
-	border-radius: 12px;
+	padding: 0.65rem 0.7rem 0.85rem;
+	background-color: #efeae2;
+	background-image:
+		radial-gradient(rgba(0, 0, 0, 0.035) 0.6px, transparent 0.7px);
+	background-size: 14px 14px;
+	border-radius: 0;
 	-webkit-overflow-scrolling: touch;
 }
 .guia.compacta .guia-msgs {
-	height: auto;
-	min-height: 130px;
-	max-height: 320px;
+	min-height: 160px;
+	max-height: 380px;
 }
 .guia-scroll-down {
 	position: absolute;
-	right: 10px;
-	bottom: 10px;
+	right: 12px;
+	bottom: 12px;
 	z-index: 3;
-	width: 36px;
-	height: 36px;
+	width: 34px;
+	height: 34px;
 	border: 0;
 	border-radius: 50%;
 	background: #fff;
 	color: #54656f;
-	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.18);
+	box-shadow: 0 1px 6px rgba(0, 0, 0, 0.2);
 	cursor: pointer;
-	font-size: 18px;
+	font-size: 16px;
 	line-height: 1;
 	display: flex;
 	align-items: center;
@@ -1309,107 +1342,144 @@ a.whatsapp-float img {
 .guia-scroll-down:focus {
 	background: #f0f2f5;
 	outline: 0;
-	color: #9d426b;
+	color: #008069;
 }
 .fala {
-	margin: 0;
-	max-width: 82%;
-	padding: 0.55rem 0.85rem 0.7rem;
-	font-size: 22px;
+	position: relative;
+	margin: 0.1rem 0;
+	max-width: 78%;
+	padding: 0.35rem 0.55rem 0.4rem 0.6rem;
+	font-size: 14.6px;
 	line-height: 1.4;
-	box-shadow: 0 1px 1px rgba(0, 0, 0, 0.06);
+	box-shadow: 0 1px 0.5px rgba(0, 0, 0, 0.13);
+	text-align: left;
+	word-wrap: break-word;
+}
+.fala::after {
+	content: "";
+	display: table;
+	clear: both;
+}
+.fala-texto {
+	display: inline;
+}
+.fala-hora {
+	display: inline-block;
+	float: right;
+	margin: 0.35rem 0 0 0.65rem;
+	font-size: 11px;
+	line-height: 1;
+	color: #667781;
+	white-space: nowrap;
+	vertical-align: bottom;
 }
 .fala-guia {
 	align-self: flex-start;
 	background: #fff;
-	color: #303030;
-	border-radius: 0 12px 12px 12px;
-	border: 1px solid #eee0e6;
+	color: #111b21;
+	border-radius: 0 7.5px 7.5px 7.5px;
+	border: 0;
 }
 .fala-guia a {
-	color: #9d426b;
-	font-weight: 700;
+	color: #027eb5;
+	font-weight: 600;
+	text-decoration: none;
+}
+.fala-guia a:hover {
 	text-decoration: underline;
 }
 .fala-guia a.guia-wa {
 	display: inline-block;
-	margin-top: 0.4rem;
-	padding: 0.5rem 1rem;
+	margin-top: 0.35rem;
+	padding: 0.4rem 0.85rem;
 	background: #25d366;
 	color: #fff !important;
 	border-radius: 999px;
 	text-decoration: none !important;
 	font-weight: 700;
-	font-size: 20px;
+	font-size: 13.5px;
 }
 .fala-quem {
 	display: block;
-	font-size: 16px;
+	font-size: 12.8px;
 	letter-spacing: 0;
 	text-transform: none;
 	font-weight: 700;
 	color: #9d426b;
-	margin-bottom: 0.2rem;
-	text-align: right;
+	margin-bottom: 0.15rem;
+	text-align: left;
 }
 .fala-voce {
 	align-self: flex-end;
-	background: #dcf8c6;
-	color: #303030;
-	border-radius: 12px 0 12px 12px;
-	border: 1px solid #c5e8b0;
+	background: #d9fdd3;
+	color: #111b21;
+	border-radius: 7.5px 0 7.5px 7.5px;
+	border: 0;
 }
 .fala-mockup {
 	max-width: 72%;
-	padding: 0.35rem;
+	padding: 0.3rem 0.35rem 0.35rem;
 	background: #fff;
-	border: 1px solid #e8d5de;
-	border-radius: 0 12px 12px 12px;
+	border: 0;
+	border-radius: 0 7.5px 7.5px 7.5px;
 	align-self: flex-start;
 }
 .fala-mockup img {
 	display: block;
 	width: auto;
-	max-width: 150px;
-	max-height: 130px;
+	max-width: 160px;
+	max-height: 140px;
 	height: auto;
 	object-fit: contain;
-	border-radius: 10px;
+	border-radius: 6px;
 	margin: 0 auto;
+}
+.guia-composer {
+	background: #f0f2f5;
+	border-top: 1px solid #e9edef;
+	padding: 0.55rem 0.65rem 0.7rem;
 }
 .guia-opcoes {
 	display: flex;
 	flex-wrap: wrap;
-	gap: 0.55rem;
-	margin-top: 1.15rem;
+	gap: 0.4rem;
+	margin-top: 0;
 }
 .guia-opcoes button,
 .guia-opcoes label.guia-upload {
-	border: 1px solid #9d426b;
+	border: 0;
 	background: #fff;
-	color: #5d5d5d;
-	border-radius: 999px;
-	padding: 0.7rem 1.1rem;
+	color: #111b21;
+	border-radius: 18px;
+	padding: 0.45rem 0.85rem;
 	cursor: pointer;
-	font-weight: 650;
+	font-weight: 500;
 	font-family: inherit;
-	font-size: 18px;
+	font-size: 13.5px;
 	line-height: 1.3;
 	display: inline-flex;
 	align-items: center;
+	box-shadow: 0 1px 1px rgba(0, 0, 0, 0.08);
 }
 .guia-opcoes button.guia-destaque {
-	font-size: 19.5px;
-	font-weight: 700;
+	font-size: 13.8px;
+	font-weight: 600;
+	background: #e7fce3;
+	color: #027a48;
 }
 .guia-opcoes button:hover,
 .guia-opcoes button:focus,
 .guia-opcoes label.guia-upload:hover,
 .guia-opcoes label.guia-upload:focus {
-	background: #9d426b;
-	border-color: #9d426b;
+	background: #008069;
+	border-color: #008069;
 	color: #fff;
 	outline: 0;
+}
+.guia-opcoes button.guia-destaque:hover,
+.guia-opcoes button.guia-destaque:focus {
+	background: #008069;
+	color: #fff;
 }
 .guia-opcoes input[type="file"] {
 	display: none;
@@ -1417,42 +1487,44 @@ a.whatsapp-float img {
 .guia-wa-bloco {
 	display: flex;
 	flex-direction: column;
-	gap: 0.55rem;
+	gap: 0.45rem;
 	width: 100%;
-	margin-bottom: 0.35rem;
+	margin-bottom: 0.25rem;
 }
 .guia-wa-input {
 	width: 100%;
 	box-sizing: border-box;
-	border: 1px solid #9d426b;
-	border-radius: 999px;
-	padding: 0.75rem 1rem;
+	border: 0;
+	border-radius: 21px;
+	padding: 0.65rem 1rem;
 	font-family: inherit;
-	font-size: 16px;
-	color: #5d5d5d;
+	font-size: 15px;
+	color: #111b21;
 	outline: 0;
 	background: #fff;
+	box-shadow: 0 1px 1px rgba(0, 0, 0, 0.06);
 }
 .guia-wa-input:focus {
-	box-shadow: 0 0 0 2px rgba(157, 66, 107, 0.25);
+	box-shadow: 0 0 0 2px rgba(0, 128, 105, 0.25);
 }
 .guia-wa-enviar {
 	width: 100%;
 	justify-content: center;
 	border: 0 !important;
-	background: #25d366 !important;
+	background: #00a884 !important;
 	color: #fff !important;
-	border-radius: 999px;
-	padding: 0.75rem 1.15rem;
+	border-radius: 24px;
+	padding: 0.65rem 1.1rem;
 	cursor: pointer;
-	font-weight: 700;
+	font-weight: 600;
 	font-family: inherit;
-	font-size: 16px;
+	font-size: 15px;
 	line-height: 1.25;
+	box-shadow: none;
 }
 .guia-wa-enviar:hover,
 .guia-wa-enviar:focus {
-	background: #1ebe57 !important;
+	background: #008069 !important;
 	color: #fff !important;
 }
 .guia-wa-enviar:disabled {
@@ -1462,7 +1534,7 @@ a.whatsapp-float img {
 .guia-wa-enviar.guia-wa-enviando {
 	opacity: 0.85;
 	cursor: wait;
-	background: #1a9f4c !important;
+	background: #008069 !important;
 }
 .guia-wa-enviar.guia-wa-enviado {
 	opacity: 1;
@@ -1472,30 +1544,31 @@ a.whatsapp-float img {
 .guia-wa-acoes {
 	display: flex;
 	flex-wrap: wrap;
-	gap: 0.5rem;
+	gap: 0.4rem;
 	width: 100%;
-	margin-top: 0.85rem;
-	padding-top: 0.85rem;
-	border-top: 1px solid #e8d5de;
+	margin-top: 0.55rem;
+	padding-top: 0.55rem;
+	border-top: 1px solid #e9edef;
 }
 .guia .lgpd {
 	margin: 0;
-	padding: 0.85rem 1rem 1rem;
+	padding: 0.65rem 0.85rem 0.75rem;
 	text-align: center;
-	font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
-	font-size: 15px;
-	font-weight: 700;
-	line-height: 1.45;
-	color: #9d426b;
-	background: #f7eef2;
-	border-top: 2px solid #9d426b;
+	font-family: inherit;
+	font-size: 12px;
+	font-weight: 500;
+	line-height: 1.4;
+	color: #667781;
+	background: #f0f2f5;
+	border-top: 1px solid #e9edef;
 }
 .guia .lgpd br {
 	display: block;
 }
 @media (max-width: 767px) {
-	.guia {
+	.guia.guia-wa {
 		max-width: 100%;
+		border-radius: 0;
 	}
 	.guia .retrato {
 		width: 100%;
@@ -1507,44 +1580,37 @@ a.whatsapp-float img {
 		height: auto;
 	}
 	.guia.compacta .retrato video {
-		max-height: 160px;
+		max-height: 150px;
 	}
 	.guia-msgs {
-		height: auto;
-		min-height: 100px;
-		max-height: 260px;
-	}
-	.guia.compacta .guia-msgs {
-		height: auto;
 		min-height: 120px;
 		max-height: 300px;
 	}
+	.guia.compacta .guia-msgs {
+		min-height: 140px;
+		max-height: 340px;
+	}
 	.fala {
-		font-size: 22px;
+		font-size: 14.8px;
+		max-width: 85%;
 	}
 	.fala-quem {
-		font-size: 16px;
-		text-transform: none;
+		font-size: 12.5px;
 	}
 	.guia-opcoes button,
 	.guia-opcoes label.guia-upload {
-		font-size: 17px;
+		font-size: 13.2px;
 	}
 	.guia-opcoes button.guia-destaque {
-		font-size: 18.5px;
+		font-size: 13.5px;
 	}
 	.guia .lgpd {
-		font-size: 14px;
-		padding: 0.75rem 0.85rem 0.9rem;
+		font-size: 11.5px;
 	}
 	.guia-wa-input {
 		font-size: 15px;
 	}
 	.guia-wa-enviar {
-		font-size: 15px;
-	}
-	.guia-wa-acoes {
-		margin-top: 0.75rem;
-		padding-top: 0.75rem;
+		font-size: 14.5px;
 	}
 }

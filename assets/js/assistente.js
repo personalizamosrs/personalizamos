@@ -125,6 +125,11 @@
     atualizarScrollDown();
   }
 
+  function horaAgora() {
+    var d = new Date();
+    return doisDigitos(d.getHours()) + ":" + doisDigitos(d.getMinutes());
+  }
+
   function fala(texto, autor, html) {
     var p = document.createElement("p");
     p.className = "fala fala-" + (autor === "voce" ? "voce" : "guia");
@@ -136,11 +141,19 @@
     }
     if (html) {
       var corpo = document.createElement("span");
+      corpo.className = "fala-texto";
       corpo.innerHTML = texto;
       p.appendChild(corpo);
     } else {
-      p.appendChild(document.createTextNode(texto));
+      var corpoTxt = document.createElement("span");
+      corpoTxt.className = "fala-texto";
+      corpoTxt.textContent = texto;
+      p.appendChild(corpoTxt);
     }
+    var hora = document.createElement("span");
+    hora.className = "fala-hora";
+    hora.textContent = horaAgora();
+    p.appendChild(hora);
     msgs.appendChild(p);
     irParaFimChat();
   }
@@ -341,12 +354,17 @@
     img.alt = "Prévia ilustrativa da caneca personalizada";
     p.appendChild(img);
     var nota = document.createElement("span");
+    nota.className = "fala-texto";
     nota.style.display = "block";
-    nota.style.marginTop = "0.4rem";
-    nota.style.fontSize = "0.92rem";
+    nota.style.marginTop = "0.35rem";
+    nota.style.fontSize = "0.85rem";
     nota.innerHTML =
       "Prévia ilustrativa — a arte final é ajustada na produção.";
     p.appendChild(nota);
+    var hora = document.createElement("span");
+    hora.className = "fala-hora";
+    hora.textContent = horaAgora();
+    p.appendChild(hora);
     msgs.appendChild(p);
     if (img.complete) {
       irParaFimChat();
