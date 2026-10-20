@@ -17,20 +17,6 @@ jQuery(document).ready(function() {
 	} catch (e) {}
 
 	/*
-	    Link Parceiros só no rodapé (não entra no menu)
-	*/
-	try {
-		if (!document.querySelector('.footer-parceiros-link')) {
-			var $copy = jQuery('.footer-copyright p').first();
-			if ($copy.length) {
-				var txt = $copy.html() || '';
-				if (txt.indexOf('parceiros.html') === -1) {
-					$copy.append(' · <a class="footer-parceiros-link" href="parceiros.html">Parceiros</a>');
-				}
-			}
-		}
-	} catch (e2) {}
-	/*
 	    Wow
 	*/
 	new WOW().init();
