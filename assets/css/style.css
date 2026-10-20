@@ -1548,3 +1548,121 @@ a.whatsapp-float img {
 		padding-top: 0.75rem;
 	}
 }
+
+/* ===== Parceiros ===== */
+.footer-parceiros-link {
+	color: #9d426b;
+	font-weight: 700;
+}
+.footer-parceiros-link:hover,
+.footer-parceiros-link:focus {
+	color: #fff;
+}
+.parceiros-page {
+	padding: 2.5rem 0 3.5rem;
+	text-align: left;
+	background: linear-gradient(180deg, #faf6f8 0%, #fff 40%);
+}
+.parceiros-intro {
+	font-size: 16px;
+	line-height: 1.55;
+	color: #5d5d5d;
+	max-width: 720px;
+	margin: 0 auto 2rem;
+	text-align: center;
+}
+.parceiro-card {
+	background: #fff;
+	border: 1px solid #ead7e0;
+	border-radius: 14px;
+	padding: 1.5rem 1.25rem 1.75rem;
+	margin-bottom: 1.75rem;
+	box-shadow: 0 8px 24px rgba(157, 66, 107, 0.08);
+}
+.parceiro-brand {
+	text-align: center;
+	margin-bottom: 1rem;
+}
+.parceiro-logo {
+	width: 140px;
+	height: 140px;
+	object-fit: contain;
+	border-radius: 50%;
+	background: #fff;
+	border: 2px solid #f0e2e8;
+}
+.parceiro-card h2 {
+	margin: 0 0 0.25rem;
+	font-family: 'Lobster', cursive;
+	font-size: 32px;
+	color: #9d426b;
+}
+.parceiro-tag {
+	margin: 0 0 0.75rem;
+	font-size: 14px;
+	font-weight: 700;
+	color: #888;
+	text-transform: uppercase;
+	letter-spacing: 0.04em;
+}
+.parceiro-card p {
+	font-size: 15px;
+	line-height: 1.55;
+	color: #5d5d5d;
+}
+.parceiro-media {
+	margin: 1rem 0 1.15rem;
+	border-radius: 10px;
+	overflow: hidden;
+	background: #f7eef2;
+}
+.parceiro-media img {
+	display: block;
+	width: 100%;
+	height: auto;
+}
+.parceiro-ctas {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0.65rem;
+}
+.parceiro-btn {
+	display: inline-flex;
+	align-items: center;
+	gap: 0.4rem;
+	padding: 0.65rem 1rem;
+	border-radius: 999px;
+	font-size: 14px;
+	font-weight: 700;
+	color: #fff !important;
+	text-decoration: none !important;
+}
+.parceiro-btn-ig {
+	background: #c13584;
+}
+.parceiro-btn-ig:hover,
+.parceiro-btn-ig:focus {
+	background: #a12c6e;
+	color: #fff !important;
+}
+.parceiro-btn-wa {
+	background: #25d366;
+}
+.parceiro-btn-wa:hover,
+.parceiro-btn-wa:focus {
+	background: #1ebe57;
+	color: #fff !important;
+}
+@media (max-width: 767px) {
+	.parceiro-card h2 {
+		font-size: 26px;
+		text-align: center;
+	}
+	.parceiro-tag,
+	.parceiro-card > .row > .col-sm-9 > p {
+		text-align: center;
+	}
+	.parceiro-ctas {
+		justify-content: center;
+	}
+}
