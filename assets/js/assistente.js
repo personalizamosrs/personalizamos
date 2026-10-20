@@ -213,15 +213,11 @@
     passo = "objetivo";
     limparOpcoes();
     fala("Me conta: o que você precisa agora?");
-    botao(
-      "Canecas personalizadas",
-      function () {
-        respostas.cat = "empresa";
-        fala("Canecas personalizadas", "voce");
-        fluxoCaneca();
-      },
-      true
-    );
+    botao("Canecas personalizadas", function () {
+      respostas.cat = "empresa";
+      fala("Canecas personalizadas", "voce");
+      fluxoCaneca();
+    });
     Object.keys(catalogo).forEach(function (key) {
       botao(catalogo[key].rotulo, function () {
         respostas.cat = key;
