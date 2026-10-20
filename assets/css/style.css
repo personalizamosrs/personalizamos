@@ -1207,6 +1207,21 @@ a.whatsapp-float img {
 .guia-home-wrap {
 	padding-bottom: 10px;
 }
+.guia-chamada {
+	margin: 0 auto 0.85rem;
+	max-width: 480px;
+	padding: 0 0.5rem;
+	text-align: center;
+	font-family: "Segoe UI", "Helvetica Neue", Helvetica, Arial, sans-serif;
+	font-size: 17px;
+	font-weight: 500;
+	line-height: 1.35;
+	color: #54656f;
+}
+.guia-chamada strong {
+	color: #9d426b;
+	font-weight: 700;
+}
 .guia.guia-wa {
 	width: 100%;
 	max-width: 480px;
@@ -1566,6 +1581,10 @@ a.whatsapp-float img {
 	display: block;
 }
 @media (max-width: 767px) {
+	.guia-chamada {
+		font-size: 15px;
+		margin-bottom: 0.7rem;
+	}
 	.guia.guia-wa {
 		max-width: 100%;
 		border-radius: 0;
